@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE module_updates PUBLIC
+    "-//NetBeans//DTD Autoupdate Catalog 2.8//EN"
+    "http://www.netbeans.org/dtds/autoupdate-catalog-2_8.dtd">
+
+<module_updates timestamp="1706832000000">
+
+    <module_group name="DatLT Plugins">
+
+        <module
+            codenamebase="com.datlt.plugin"
+            distribution="plugin/datlt_plugin-1.0.1.nbm"
+            downloadsize="12345"
+            homepage="file://///192.168.10.45/individual/DATLT/NBPlugin/update-center/README.md"
+            needsrestart="true"
+            moduleauthor="DatLT">
+
+            <description>
+                DatLT custom NetBeans plugin.
+            </description>
+
+            <manifest
+                OpenIDE-Module="com.datlt.plugin"
+                OpenIDE-Module-Name="DatLT Plugin"
+                OpenIDE-Module-Specification-Version="1.0.1"
+                OpenIDE-Module-Implementation-Version="1.0.1"
+                OpenIDE-Module-Display-Category="Tools"
+                OpenIDE-Module-Short-Description="DatLT NetBeans Plugin"
+                OpenIDE-Module-Long-Description="Custom NetBeans plugin developed by DatLT." />
+
+        </module>
+
+    </module_group>
+
+</module_updates>
