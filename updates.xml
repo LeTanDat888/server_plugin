@@ -9,7 +9,7 @@
 
         <module
             codenamebase="com.datlt.plugin"
-            distribution="https://github.com/LeTanDat888/server_plugin/releases/download/v1.0.1/datlt_plugin-1.2.0.nbm"
+            distribution="https://github.com/LeTanDat888/server_plugin/releases/download/v1.2.0/datlt_plugin-1.2.0.nbm"
             downloadsize="1282779"
             homepage="https://github.com/LeTanDat888/server_plugin/"
             needsrestart="true"
