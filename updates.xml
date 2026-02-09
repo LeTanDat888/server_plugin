@@ -9,8 +9,8 @@
 
         <module
             codenamebase="com.datlt.plugin"
-            distribution="https://github.com/LeTanDat888/server_plugin/releases/download/v1.2.1/datlt_plugin-1.2.1.nbm"
-            downloadsize="1282779"
+            distribution="https://github.com/LeTanDat888/server_plugin/releases/download/v1.2.2/datlt_plugin-1.2.2.nbm"
+            downloadsize="1282883"
             homepage="https://github.com/LeTanDat888/server_plugin/"
             needsrestart="true"
             moduleauthor="DatLT">
@@ -22,8 +22,8 @@
             <manifest
                 OpenIDE-Module="com.datlt.plugin"
                 OpenIDE-Module-Name="DatLT Plugin"
-                OpenIDE-Module-Specification-Version="1.2.1"
-                OpenIDE-Module-Implementation-Version="1.2.1"
+                OpenIDE-Module-Specification-Version="1.2.2"
+                OpenIDE-Module-Implementation-Version="1.2.2"
                 OpenIDE-Module-Display-Category="Tools"
                 OpenIDE-Module-Short-Description="DatLT NetBeans Plugin"
                 OpenIDE-Module-Long-Description="Custom NetBeans plugin developed by DatLT." />
