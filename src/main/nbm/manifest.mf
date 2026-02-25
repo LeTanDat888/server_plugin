@@ -1,0 +1,8 @@
+Manifest-Version: 1.2
+OpenIDE-Module: com.datlt.datlt_plugin/1
+OpenIDE-Module-Public-Packages: com.datlt.*
+OpenIDE-Module-Name: DatLT Plugin
+OpenIDE-Module-Requires: org.openide.windows.WindowManager
+OpenIDE-Module-Specification-Version: 1.2
+OpenIDE-Module-Implementation-Version: 1.2.2
+OpenIDE-Module-Localizing-Bundle: com/datlt/datlt_plugin/Bundle.properties
