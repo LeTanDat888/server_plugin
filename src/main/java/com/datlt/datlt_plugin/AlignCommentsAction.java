@@ -82,20 +82,19 @@ public final class AlignCommentsAction implements ActionListener {
                 String wSelectedText = editor.getSelectedText();
 
                 if (StringUtils.isNotBlank(wSelectedText)) {
-                    Map<String, Object> wMapVar = new HashMap<>();
+                    Map<String, Object> wMapVar = wBoard == null ? new HashMap<>() : wBoard.getVar(1);
                     String wTabQuantiy;
                     boolean wIsAutoFormat;
                     boolean wChbAutoAlign = MapUtils.getBoolean(wMapVar, "chbAutoAlign", false);
                     if (wBoard == null || !wChbAutoAlign) {
                         wTabQuantiy = Common.showPopUpReceiveVar(TITLE_POPUP, TITLE_INPUT, INIT_VALUE);
-                        wIsAutoFormat = "-1".equals(wTabQuantiy);
 
                         // Dừng xử lí nếu người dùng nhấn cancel
-                        if (StringUtils.isBlank(wTabQuantiy)) {
-                            return;
-                        }
+                        if (StringUtils.isBlank(wTabQuantiy)) return;
+
+                        wIsAutoFormat = "-1".equals(wTabQuantiy);
+
                     } else {
-                        wMapVar = wBoard.getVar(1);
                         wTabQuantiy = (String) wMapVar.get("txtTabQuantity");
                         wIsAutoFormat = wChbAutoAlign;
                     }

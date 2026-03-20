@@ -19,3 +19,5 @@
 ### Version 1.3.1 (2026-03-20)
 - Update format control board.
 
+### Version 1.3.2 (2026-03-20)
+- Fix bug: The auto-format check box in the control board is not working.
