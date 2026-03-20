@@ -13,8 +13,9 @@
 - Add lowercase action
 
 ...
-### Version 1.3.0 (2026-02-02)
+### Version 1.3.0 (2026-03-20)
 - Add Open control board action.
 
-
+### Version 1.3.1 (2026-03-20)
+- Update format control board.
 
