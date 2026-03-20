@@ -5,6 +5,7 @@
 package com.datlt.datlt_plugin;
 
 import com.common.Common;
+import com.common.DatLTPluginControlBoardTopComponent;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,6 +13,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import javax.swing.Icon;
 import javax.swing.JOptionPane;
 import javax.swing.text.BadLocationException;
@@ -40,12 +42,27 @@ import org.openide.windows.TopComponent;
         displayName = "#CTL_AlignCommentsAction"
 )
 @ActionReferences({
-    @ActionReference(path = "Menu/Tools/DatltPlugin", position = 1),
+    @ActionReference(path = "Menu/Tools/DatltPlugin", position = 20),
     // Alt + 2
     @ActionReference(path = "Shortcuts", name = "A-2") 
 })
 @Messages("CTL_AlignCommentsAction=Align Comments")
 public final class AlignCommentsAction implements ActionListener {
+
+    /*
+     *
+     */
+    private static final String TITLE_POPUP = "Align Comments";
+
+    /*
+     *
+     */
+    private static final String TITLE_INPUT = "Số Tab giữa comment và code dài nhất \n (Vui lòng nhập -1 để sử dụng Auto format): ";
+
+    /*
+     *
+     */
+    private static final String INIT_VALUE = "-1";
 
     private final EditCookie context;
 
@@ -55,24 +72,38 @@ public final class AlignCommentsAction implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent ev) {
+        DatLTPluginControlBoardTopComponent wBoard = Common.getControllBoard();
         Node[] activatedNodes = TopComponent.getRegistry().getActivatedNodes();
         if (activatedNodes.length > 0) {
             EditorCookie cookie = activatedNodes[0].getLookup().lookup(EditorCookie.class);
             if (cookie != null) {
                 Map<String, Object> wIndexStaEnd = Common.getIndexStaEndOfSelectedText(cookie);
-                JTextComponent editor = cookie.getOpenedPanes()[0];
-                String selectedText = editor.getSelectedText();
+                JTextComponent editor = Common.getFullSelectedLinesEditor(cookie);
+                String wSelectedText = editor.getSelectedText();
 
-                if (StringUtils.isNotBlank(selectedText)) {
-                    String wTabQuantiy = Common.showPopUpReceiveVar("Align Comments", "Số Tab giữa comment và code dài nhất \n (Vui lòng nhập -1 để sử dụng Auto format): ");
- 
-                    // Dừng xử lí nếu người dùng nhấn cancel
-                    if (StringUtils.isBlank(wTabQuantiy)) return;
+                if (StringUtils.isNotBlank(wSelectedText)) {
+                    Map<String, Object> wMapVar = new HashMap<>();
+                    String wTabQuantiy;
+                    boolean wIsAutoFormat;
+                    boolean wChbAutoAlign = MapUtils.getBoolean(wMapVar, "chbAutoAlign", false);
+                    if (wBoard == null || !wChbAutoAlign) {
+                        wTabQuantiy = Common.showPopUpReceiveVar(TITLE_POPUP, TITLE_INPUT, INIT_VALUE);
+                        wIsAutoFormat = "-1".equals(wTabQuantiy);
+
+                        // Dừng xử lí nếu người dùng nhấn cancel
+                        if (StringUtils.isBlank(wTabQuantiy)) {
+                            return;
+                        }
+                    } else {
+                        wMapVar = wBoard.getVar(1);
+                        wTabQuantiy = (String) wMapVar.get("txtTabQuantity");
+                        wIsAutoFormat = wChbAutoAlign;
+                    }
 
                     // Chia đoạn văn bản thành danh sách các dòng
-                    String[] lines = selectedText.split("\\R", -1);
+                    String[] lines = wSelectedText.split("\\R", -1);
                     int maxCodeLength = 0;
-                    
+
                     // Tìm vị trí (cột) xa nhất của phần code trước dấu "//"
                     for (String line : lines) {
                         if (line.contains("//") && !StringUtils.equals(StringUtils.left(StringUtils.trimToEmpty(line), 2), "//")) {
@@ -86,10 +117,6 @@ public final class AlignCommentsAction implements ActionListener {
                     int mostFrequentPosition = maxCodeLength;
                     int wTab = Integer.parseInt(wTabQuantiy);
                     int wSpaceQ = 0;
-                    boolean wIsAutoFormat = false;
-
-                    // Trường hợp người dùng nhập -1 để tự động format
-                    if (wTab == -1) wIsAutoFormat = true;
 
                     // Trường hợp tự động format
                     if (wIsAutoFormat) {

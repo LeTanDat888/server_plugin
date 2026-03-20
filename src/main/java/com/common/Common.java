@@ -15,6 +15,10 @@ import org.openide.NotifyDescriptor;
 import org.openide.awt.NotificationDisplayer;
 import org.openide.cookies.EditorCookie;
 import org.openide.text.NbDocument;
+import javax.swing.text.BadLocationException;
+import org.openide.util.Exceptions;
+import org.openide.windows.TopComponent;
+import org.openide.windows.WindowManager;
 
 /**
  *
@@ -46,7 +50,7 @@ public class Common {
      * @param pTitleInput
      * @return 
      */
-    public static String showPopUpReceiveVar(String pTitlePopUp, String pTitleInput) {
+    public static String showPopUpReceiveVar(String pTitlePopUp, String pTitleInput, String pInitValue) {
         String wResult = StringUtils.EMPTY;
 
         // 1. Tạo một hộp thoại nhập liệu (Input Dialog)
@@ -54,7 +58,7 @@ public class Common {
                 pTitleInput, // Thông điệp
                 pTitlePopUp // Tiêu đề popup
         );
-        input.setInputText("-1"); // Giá trị mặc định
+        input.setInputText(pInitValue); // Giá trị mặc định
 
         // 2. Hiển thị popup và kiểm tra xem người dùng nhấn OK hay Cancel
         if (DialogDisplayer.getDefault().notify(input) == NotifyDescriptor.OK_OPTION) {
@@ -111,5 +115,91 @@ public class Common {
      */
     public static String lowercase(String pText) {
         return StringUtils.lowerCase(pText);
+    }
+
+    /**
+     * Lấy toàn bộ nội dung các dòng có chứa đoạn bôi đen.
+     * Tương đương getSelectedText() nhưng mở rộng ra đầu và cuối dòng.
+     */
+    public static String getFullSelectedLinesText(EditorCookie cookie) {
+        try {
+            JTextComponent editor = cookie.getOpenedPanes()[0];
+            StyledDocument doc = cookie.getDocument();
+
+            // Lấy vị trí bôi đen hiện tại (offset)
+            int selectionStart = editor.getSelectionStart();
+            int selectionEnd = editor.getSelectionEnd();
+
+            // Sử dụng Element để tìm vị trí bắt đầu dòng đầu và kết thúc dòng cuối
+            // Cách này an toàn và chính xác hơn trên mọi phiên bản NetBeans
+            int fullStart = NbDocument.findLineRootElement(doc)
+                    .getElement(NbDocument.findLineRootElement(doc).getElementIndex(selectionStart))
+                    .getStartOffset();
+
+            int fullEnd = NbDocument.findLineRootElement(doc)
+                    .getElement(NbDocument.findLineRootElement(doc).getElementIndex(selectionEnd))
+                    .getEndOffset();
+
+            // Trả về chuỗi văn bản trong phạm vi đã mở rộng hoàn toàn các dòng
+            return doc.getText(fullStart, fullEnd - fullStart);
+
+        } catch (BadLocationException ex) {
+            Exceptions.printStackTrace(ex);
+            return null;
+        }
+    }
+
+    /**
+     * Mở rộng vùng chọn ra toàn bộ các dòng chứa đoạn bôi đen và trả về chính Editor đó để tiếp tục thao tác.
+     */
+    public static JTextComponent getFullSelectedLinesEditor(EditorCookie cookie) {
+        try {
+            JTextComponent editor = cookie.getOpenedPanes()[0];
+            StyledDocument doc = cookie.getDocument();
+
+            // Lấy vị trí bôi đen hiện tại
+            int selectionStart = editor.getSelectionStart();
+            int selectionEnd = editor.getSelectionEnd();
+
+            // Tìm vị trí bắt đầu dòng đầu và kết thúc dòng cuối bằng Element
+            int fullStart = NbDocument.findLineRootElement(doc)
+                    .getElement(NbDocument.findLineRootElement(doc).getElementIndex(selectionStart))
+                    .getStartOffset();
+
+            int fullEnd = NbDocument.findLineRootElement(doc)
+                    .getElement(NbDocument.findLineRootElement(doc).getElementIndex(selectionEnd))
+                    .getEndOffset();
+
+            // Thực hiện bôi đen lại toàn bộ các dòng trên giao diện
+            editor.setSelectionStart(fullStart);
+            editor.setSelectionEnd(fullEnd);
+
+            // Trả về editor đã được cập nhật vùng chọn
+            return editor;
+
+        } catch (Exception ex) {
+            // Sử dụng Exception chung để bắt cả lỗi index nếu không có Pane nào mở
+            Exceptions.printStackTrace(ex);
+            return null;
+        }
+    }
+
+    /**
+     * 
+     * @return 
+     */
+    public static DatLTPluginControlBoardTopComponent getControllBoard () {
+        TopComponent wTC = WindowManager.getDefault().findTopComponent("DatLTPluginControlBoardTopComponent");
+
+        if (wTC instanceof DatLTPluginControlBoardTopComponent) {
+            DatLTPluginControlBoardTopComponent wBoard = (DatLTPluginControlBoardTopComponent) wTC;
+//            wBoard.open();
+//            wBoard.requestActive();
+//
+//            // display Align Comments Tab
+//            wBoard.setSelectedIndex(1);
+            return wBoard;
+        }
+        return null;
     }
 }

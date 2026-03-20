@@ -34,7 +34,7 @@ import org.openide.windows.TopComponent;
         displayName = "#CTL_ColumnNameToVarAction"
 )
 @ActionReferences({
-    @ActionReference(path = "Menu/Tools/DatltPlugin", position = 0),
+    @ActionReference(path = "Menu/Tools/DatltPlugin", position = 10),
     // Alt + 1
     @ActionReference(path = "Shortcuts", name = "A-1") 
 })

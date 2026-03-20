@@ -4,9 +4,29 @@
  */
 package com.common;
 
+import java.awt.Color;
+import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import javax.swing.SwingUtilities;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.SimpleAttributeSet;
+import javax.swing.text.StyleConstants;
+import javax.swing.text.StyledDocument;
+import org.apache.commons.lang3.StringUtils;
 import org.netbeans.api.settings.ConvertAsProperties;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
+import org.openide.filesystems.FileChooserBuilder;
 import org.openide.windows.TopComponent;
 import org.openide.util.NbBundle.Messages;
 
@@ -24,7 +44,7 @@ import org.openide.util.NbBundle.Messages;
 )
 @TopComponent.Registration(mode = "navigator", openAtStartup = false)
 @ActionID(category = "Window", id = "com.common.DatLTPluginControlBoardTopComponent")
-@ActionReference(path = "Menu/Window" /*, position = 333 */)
+//@ActionReference(path = "Menu/Window" /*, position = 333 */)
 @TopComponent.OpenActionRegistration(
         displayName = "#CTL_DatLTPluginControlBoardAction",
         preferredID = "DatLTPluginControlBoardTopComponent"
@@ -49,27 +69,26 @@ public final class DatLTPluginControlBoardTopComponent extends TopComponent {
      */
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
+        java.awt.GridBagConstraints gridBagConstraints;
 
-        jPanel2 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         jTabbedPane1 = new javax.swing.JTabbedPane();
         jPanel1 = new javax.swing.JPanel();
+        jLabel4 = new javax.swing.JLabel();
+        txtFilePath = new javax.swing.JTextField();
+        btnBrowse = new javax.swing.JButton();
+        btnMove = new javax.swing.JButton();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        txtLog = new javax.swing.JTextPane();
+        chbMoelaCmn = new javax.swing.JCheckBox();
+        chbMoelaSQL = new javax.swing.JCheckBox();
+        chbMoelaGym = new javax.swing.JCheckBox();
+        chbMoelaCheck = new javax.swing.JCheckBox();
         jPanel3 = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
         chbAutoAlign = new javax.swing.JCheckBox();
         jLabel3 = new javax.swing.JLabel();
         txtTabQuantity = new javax.swing.JTextField();
-
-        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
-        jPanel2.setLayout(jPanel2Layout);
-        jPanel2Layout.setHorizontalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 100, Short.MAX_VALUE)
-        );
-        jPanel2Layout.setVerticalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 100, Short.MAX_VALUE)
-        );
 
         jLabel1.setBackground(new java.awt.Color(153, 204, 0));
         jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
@@ -80,17 +99,114 @@ public final class DatLTPluginControlBoardTopComponent extends TopComponent {
         jLabel1.setToolTipText(org.openide.util.NbBundle.getMessage(DatLTPluginControlBoardTopComponent.class, "DatLTPluginControlBoardTopComponent.jLabel1.toolTipText")); // NOI18N
 
         jPanel1.setRequestFocusEnabled(false);
+        jPanel1.setLayout(new java.awt.GridBagLayout());
 
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 407, Short.MAX_VALUE)
-        );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 262, Short.MAX_VALUE)
-        );
+        org.openide.awt.Mnemonics.setLocalizedText(jLabel4, org.openide.util.NbBundle.getMessage(DatLTPluginControlBoardTopComponent.class, "DatLTPluginControlBoardTopComponent.jLabel4.text")); // NOI18N
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.insets = new java.awt.Insets(5, 0, 0, 0);
+        jPanel1.add(jLabel4, gridBagConstraints);
+
+        txtFilePath.setText(org.openide.util.NbBundle.getMessage(DatLTPluginControlBoardTopComponent.class, "DatLTPluginControlBoardTopComponent.txtFilePath.text")); // NOI18N
+        txtFilePath.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtFilePathActionPerformed(evt);
+            }
+        });
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.gridwidth = 4;
+        gridBagConstraints.gridheight = 2;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
+        jPanel1.add(txtFilePath, gridBagConstraints);
+
+        org.openide.awt.Mnemonics.setLocalizedText(btnBrowse, org.openide.util.NbBundle.getMessage(DatLTPluginControlBoardTopComponent.class, "DatLTPluginControlBoardTopComponent.btnBrowse.text")); // NOI18N
+        btnBrowse.setAlignmentY(0.0F);
+        btnBrowse.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnBrowseActionPerformed(evt);
+            }
+        });
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 4;
+        gridBagConstraints.gridy = 3;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHEAST;
+        gridBagConstraints.insets = new java.awt.Insets(5, 5, 0, 5);
+        jPanel1.add(btnBrowse, gridBagConstraints);
+
+        org.openide.awt.Mnemonics.setLocalizedText(btnMove, org.openide.util.NbBundle.getMessage(DatLTPluginControlBoardTopComponent.class, "DatLTPluginControlBoardTopComponent.btnMove.text")); // NOI18N
+        btnMove.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnMoveActionPerformed(evt);
+            }
+        });
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 3;
+        gridBagConstraints.gridwidth = 4;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.insets = new java.awt.Insets(5, 5, 0, 0);
+        jPanel1.add(btnMove, gridBagConstraints);
+
+        txtLog.setEditable(false);
+        txtLog.setToolTipText(org.openide.util.NbBundle.getMessage(DatLTPluginControlBoardTopComponent.class, "DatLTPluginControlBoardTopComponent.txtLog.toolTipText")); // NOI18N
+        jScrollPane1.setViewportView(txtLog);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 4;
+        gridBagConstraints.gridwidth = 5;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.weighty = 1.0;
+        gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
+        jPanel1.add(jScrollPane1, gridBagConstraints);
+
+        chbMoelaCmn.setSelected(true);
+        org.openide.awt.Mnemonics.setLocalizedText(chbMoelaCmn, org.openide.util.NbBundle.getMessage(DatLTPluginControlBoardTopComponent.class, "DatLTPluginControlBoardTopComponent.chbMoelaCmn.text")); // NOI18N
+        chbMoelaCmn.setToolTipText(org.openide.util.NbBundle.getMessage(DatLTPluginControlBoardTopComponent.class, "DatLTPluginControlBoardTopComponent.chbMoelaCmn.toolTipText")); // NOI18N
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.LAST_LINE_END;
+        gridBagConstraints.insets = new java.awt.Insets(5, 3, 0, 10);
+        jPanel1.add(chbMoelaCmn, gridBagConstraints);
+
+        chbMoelaSQL.setSelected(true);
+        org.openide.awt.Mnemonics.setLocalizedText(chbMoelaSQL, org.openide.util.NbBundle.getMessage(DatLTPluginControlBoardTopComponent.class, "DatLTPluginControlBoardTopComponent.chbMoelaSQL.text")); // NOI18N
+        chbMoelaSQL.setToolTipText(org.openide.util.NbBundle.getMessage(DatLTPluginControlBoardTopComponent.class, "DatLTPluginControlBoardTopComponent.chbMoelaSQL.toolTipText")); // NOI18N
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 2;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.FIRST_LINE_START;
+        gridBagConstraints.insets = new java.awt.Insets(5, 0, 0, 10);
+        jPanel1.add(chbMoelaSQL, gridBagConstraints);
+
+        chbMoelaGym.setSelected(true);
+        org.openide.awt.Mnemonics.setLocalizedText(chbMoelaGym, org.openide.util.NbBundle.getMessage(DatLTPluginControlBoardTopComponent.class, "DatLTPluginControlBoardTopComponent.chbMoelaGym.text")); // NOI18N
+        chbMoelaGym.setToolTipText(org.openide.util.NbBundle.getMessage(DatLTPluginControlBoardTopComponent.class, "DatLTPluginControlBoardTopComponent.chbMoelaGym.toolTipText")); // NOI18N
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 3;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.FIRST_LINE_START;
+        gridBagConstraints.insets = new java.awt.Insets(5, 0, 0, 10);
+        jPanel1.add(chbMoelaGym, gridBagConstraints);
+
+        chbMoelaCheck.setSelected(true);
+        org.openide.awt.Mnemonics.setLocalizedText(chbMoelaCheck, org.openide.util.NbBundle.getMessage(DatLTPluginControlBoardTopComponent.class, "DatLTPluginControlBoardTopComponent.chbMoelaCheck.text")); // NOI18N
+        chbMoelaCheck.setToolTipText(org.openide.util.NbBundle.getMessage(DatLTPluginControlBoardTopComponent.class, "DatLTPluginControlBoardTopComponent.chbMoelaCheck.toolTipText")); // NOI18N
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 4;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.FIRST_LINE_START;
+        gridBagConstraints.insets = new java.awt.Insets(5, 0, 0, 10);
+        jPanel1.add(chbMoelaCheck, gridBagConstraints);
 
         jTabbedPane1.addTab(org.openide.util.NbBundle.getMessage(DatLTPluginControlBoardTopComponent.class, "DatLTPluginControlBoardTopComponent.jPanel1.TabConstraints.tabTitle"), jPanel1); // NOI18N
 
@@ -122,7 +238,7 @@ public final class DatLTPluginControlBoardTopComponent extends TopComponent {
                         .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
                         .addComponent(txtTabQuantity, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGap(0, 230, Short.MAX_VALUE))
+                .addGap(0, 166, Short.MAX_VALUE))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -135,7 +251,7 @@ public final class DatLTPluginControlBoardTopComponent extends TopComponent {
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3)
                     .addComponent(txtTabQuantity, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(188, Short.MAX_VALUE))
+                .addContainerGap(163, Short.MAX_VALUE))
         );
 
         chbAutoAlign.getAccessibleContext().setAccessibleName(org.openide.util.NbBundle.getMessage(DatLTPluginControlBoardTopComponent.class, "DatLTPluginControlBoardTopComponent.chbAutoAlign.AccessibleContext.accessibleName")); // NOI18N
@@ -147,37 +263,128 @@ public final class DatLTPluginControlBoardTopComponent extends TopComponent {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
+                .addGap(6, 6, 6)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 415, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
-                        .addGap(14, 14, 14))))
+                        .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 343, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 16, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 297, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(6, 6, 6)
+                .addComponent(jTabbedPane1)
+                .addGap(6, 6, 6))
         );
 
         jTabbedPane1.getAccessibleContext().setAccessibleName(org.openide.util.NbBundle.getMessage(DatLTPluginControlBoardTopComponent.class, "DatLTPluginControlBoardTopComponent.jTabbedPane1.AccessibleContext.accessibleName")); // NOI18N
         jTabbedPane1.getAccessibleContext().setAccessibleDescription(org.openide.util.NbBundle.getMessage(DatLTPluginControlBoardTopComponent.class, "DatLTPluginControlBoardTopComponent.jTabbedPane1.AccessibleContext.accessibleDescription")); // NOI18N
     }// </editor-fold>//GEN-END:initComponents
 
+    private void btnMoveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMoveActionPerformed
+        // 0.Var
+        String wPath = StringUtils.trimToEmpty(txtFilePath.getText());
+        // 1. Xóa log cũ
+        txtLog.setText("");
+
+        if (StringUtils.isNotBlank(wPath)) {
+            appendLog("--- Bắt đầu đồng bộ file Jar ---", null);
+
+            // 2. Chạy logic nặng trong một luồng riêng để không làm đơ UI
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        List<String> wFileNameCopySuccess = new ArrayList<>();
+                        Path wPathOri = Paths.get(wPath);
+                        Path wPathTar = Paths.get(wPath, "JarRelease");
+
+                        // Kiểm tra folder gốc
+                        appendLog("Kiểm tra target path...", null);
+                        if (wPathOri.isAbsolute() && Files.isDirectory(wPathOri) && Files.exists(wPathOri)) {
+                            appendLog("Path gốc di chuyển hợp lệ!", Color.GREEN);
+                        } else {
+                            appendLog("Path gốc di chuyển không hợp lệ! Vui lòng chọn lại folder thực thi...", Color.RED);
+                            return;
+                        }
+
+                        // Kiểm tra folder đích
+                        appendLog("Kiểm tra target path...", null);
+                        if (wPathTar.isAbsolute() && Files.isDirectory(wPathTar) && Files.exists(wPathTar)) {
+                            appendLog("Path đích di chuyển hợp lệ!", Color.GREEN);
+                        } else {
+                            appendLog("Path đích di chuyển không hợp lệ! Vui lòng chọn lại folder thực thi...", Color.RED);
+                            return;
+                        }
+
+                        // Kiểm tra và di chuyển file
+                        if (chbMoelaCmn.isSelected() &&  copyFileCustom(wPathOri, wPathTar, Const.MoveFileName.MOELACMN)) {
+                            wFileNameCopySuccess.add(Const.MoveFileName.MOELACMN);
+                        }
+
+                        if (chbMoelaSQL.isSelected() && copyFileCustom(wPathOri, wPathTar, Const.MoveFileName.MOELASQL)) {
+                            wFileNameCopySuccess.add(Const.MoveFileName.MOELASQL);
+                        }
+
+                        if (chbMoelaGym.isSelected() && copyFileCustom(wPathOri, wPathTar, Const.MoveFileName.MOELAGYM)) {
+                            wFileNameCopySuccess.add(Const.MoveFileName.MOELAGYM);
+                        }
+
+                        if (chbMoelaCheck.isSelected() && copyFileCustom(wPathOri, wPathTar, Const.MoveFileName.MOELACHECK)) {
+                            wFileNameCopySuccess.add(Const.MoveFileName.MOELACHECK);
+                        }
+
+                        appendLog("Hoàn tất sao chép:", new Color(0, 150, 0));
+                        wFileNameCopySuccess.forEach(wMess -> appendLog("-> " + wMess + Const.Extension.JAR + " ✓", new Color(0, 150, 0)));
+                    } catch (Exception e) {
+                        appendLog("LỖI THỰC THI: " + e.getMessage(), Color.RED);
+                        appendLog("Liên hệ người phát triển để được hỗ trợ!", Color.BLUE);
+                    }
+                }
+            }).start();
+        } else {
+            appendLog("VUI LÒNG CHỌN FOLDER THỰC THI...", Color.RED);
+        }
+    }//GEN-LAST:event_btnMoveActionPerformed
+
+    private void btnBrowseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBrowseActionPerformed
+        // Tạo bộ dựng hộp thoại chọn file
+        File file = new FileChooserBuilder("DatLT-MoveFile-Picker")
+        .setTitle("Chọn Thư Mục Đích")
+        .setDirectoriesOnly(true) // Chỉ cho chọn Folder, đổi thành false nếu muốn chọn File
+        .showOpenDialog();
+
+        if (file != null) {
+            // Đưa đường dẫn đã chọn vào TextField
+            txtFilePath.setText(file.getAbsolutePath());
+        }
+    }//GEN-LAST:event_btnBrowseActionPerformed
+
+    private void txtFilePathActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtFilePathActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtFilePathActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnBrowse;
+    private javax.swing.JButton btnMove;
     private javax.swing.JCheckBox chbAutoAlign;
+    private javax.swing.JCheckBox chbMoelaCheck;
+    private javax.swing.JCheckBox chbMoelaCmn;
+    private javax.swing.JCheckBox chbMoelaGym;
+    private javax.swing.JCheckBox chbMoelaSQL;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
     private javax.swing.JPanel jPanel1;
-    private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
+    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTabbedPane jTabbedPane1;
+    private javax.swing.JTextField txtFilePath;
+    private javax.swing.JTextPane txtLog;
     private javax.swing.JTextField txtTabQuantity;
     // End of variables declaration//GEN-END:variables
     @Override
@@ -200,5 +407,147 @@ public final class DatLTPluginControlBoardTopComponent extends TopComponent {
     void readProperties(java.util.Properties p) {
         String version = p.getProperty("version");
         // TODO read your settings according to their version
+    }
+
+    /**
+     * Lấy index tab
+     *
+     */
+    public int getSelectedIndex(int pTabIdx) {
+        return jTabbedPane1.getSelectedIndex();
+    }
+
+    /**
+     * Thiết lập tab index
+     * 
+     */
+    public void setSelectedIndex(int pTabIdx) {
+        jTabbedPane1.setSelectedIndex(pTabIdx);
+    }
+
+    /**
+     * Lấy tất cả biến số của tab Align Comments
+     * 
+     * @return 
+     */
+    public Map<String, Object> getVar(int pTabIdx) {
+        Map<String, Object> wMapR = new HashMap<>();
+
+        switch (pTabIdx) {
+            case 0:
+                break;
+            case 1:
+                wMapR.put("chbAutoAlign", chbAutoAlign.isSelected());             // Auto align format
+                wMapR.put("txtTabQuantity", txtTabQuantity.getText());            // Số Tab muốn giữa code và comment
+
+                break;
+            default:
+                throw new AssertionError();
+        }
+
+        return wMapR;
+    }
+
+    /**
+     * Xuất log (dùng đa luồng)
+     * 
+     * @param msg nội dung log
+     * @param c màu chữ (null = Color.BLACK)
+     */
+    public void appendLog(String msg, Color c) {
+        // Kiểm tra xem có đang ở EDT không, nếu có thì chạy luôn, nếu không thì dùng invokeLater
+        if (SwingUtilities.isEventDispatchThread()) {
+            updateLogInternal(msg, c);
+        } else {
+            SwingUtilities.invokeLater(() -> updateLogInternal(msg, c));
+        }
+    }
+
+    /**
+     * Thiết lập nội dung log
+     *
+     * @param msg nội dung log
+     * @param c màu chữ (null = Color.BLACK)
+     */
+    private void updateLogInternal(String msg, Color c) {
+        if (txtLog != null && txtLog.isDisplayable()) {
+            try {
+                final DateTimeFormatter LOG_FORMATTER = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss.SSS");
+
+                // Sử dụng formatter dùng chung và thay \t bằng dấu phân cách rõ ràng hơn
+                String timestamp = LocalDateTime.now().format(LOG_FORMATTER);
+                String wMsg = String.format("%s | %s", timestamp, msg);
+
+                StyledDocument doc = txtLog.getStyledDocument();
+                SimpleAttributeSet sas = new SimpleAttributeSet();
+
+                // Dùng Color.BLACK mặc định nếu c truyền vào là null
+                Color wColor = (c == null) ? Color.BLACK : c;
+                StyleConstants.setForeground(sas, wColor);
+
+                doc.insertString(doc.getLength(), wMsg + "\n", sas);
+
+                // Đảm bảo cuộn xuống cuối cùng
+                txtLog.setCaretPosition(doc.getLength());
+            } catch (BadLocationException e) {
+                System.err.println("Lỗi UI Log: " + msg);
+            }
+        }
+    }
+
+    public boolean copyFileCustom(Path sourcePath, Path targetFolderPath, String pFileName) {
+        final Color wGreenColor = new Color(0, 150, 0);
+        final String wMessFileIsExists = "File hợp lệ.";
+        final String wMessFileIsNotExists = "File không tồn tại. Đảm bảo rằng bạn đã build project.";
+
+        // Kiểm tra và di chuyển file
+        appendLog("Kiểm tra file dist/" + pFileName + Const.Extension.JAR, null);
+        Path wMoelaCmnPath = Paths.get(sourcePath.toString(), "Checkin", pFileName, "dist", pFileName + Const.Extension.JAR);
+        if (Files.exists(wMoelaCmnPath)) {
+            appendLog(wMessFileIsExists, wGreenColor);
+
+            // Di chuyển file
+            copyFile(wMoelaCmnPath, targetFolderPath);
+            return true;
+        } else {
+            appendLog(wMessFileIsNotExists, Color.RED);
+            return false;
+        }
+    }
+
+    /**
+     * Sao chép file
+     * 
+     * @param sourcePath Path file copy
+     * @param targetFolderPath Đích path folder copy
+     */
+    public void copyFile(Path sourcePath, Path targetFolderPath) {
+        try {
+            // Tạo đường dẫn đầy đủ của file trong thư mục đích
+            Path targetFile = targetFolderPath.resolve(sourcePath.getFileName());
+
+            appendLog("Đang sao chép file: " + sourcePath.getFileName(), Color.BLACK);
+
+            // 1. Kiểm tra file nguồn
+            if (!Files.exists(sourcePath)) {
+                appendLog("LỖI: Không tìm thấy file nguồn!", Color.RED);
+                return;
+            }
+
+            // 2. Kiểm tra thư mục đích có tồn tại và đúng là thư mục không
+            if (!Files.exists(targetFolderPath) || !Files.isDirectory(targetFolderPath)) {
+                appendLog("LỖI: Thư mục đích không tồn tại hoặc không hợp lệ!", Color.RED);
+                return;
+            }
+
+            // 3. Thực hiện sao chép
+            // Tùy chọn REPLACE_EXISTING để ghi đè nếu file cùng tên đã có ở đó
+            Files.copy(sourcePath, targetFile, StandardCopyOption.REPLACE_EXISTING);
+
+            appendLog("Thành công: Đã sao chép " + sourcePath.getFileName() + " vào " + targetFolderPath, new Color(0, 128, 0));
+
+        } catch (Exception e) {
+            appendLog("LỖI: " + e.getMessage(), Color.RED);
+        }
     }
 }

@@ -33,7 +33,7 @@ import org.openide.windows.TopComponent;
         displayName = "#CTL_Uppercase"
 )
 @ActionReferences({
-    @ActionReference(path = "Menu/Tools/DatltPlugin", position = 2),
+    @ActionReference(path = "Menu/Tools/DatltPlugin", position = 30),
     // Alt + U
     @ActionReference(path = "Shortcuts", name = "A-u") 
 })
