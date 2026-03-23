@@ -21,3 +21,7 @@
 
 ### Version 1.3.2 (2026-03-20)
 - Fix bug: The auto-format check box in the control board is not working.
+
+### Version 1.3.3 (2026-03-23)
+- Change name: Move file tab -> Sync tab
+- Update UI for Sync tab
