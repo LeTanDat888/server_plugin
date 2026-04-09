@@ -25,3 +25,6 @@
 ### Version 1.3.3 (2026-03-23)
 - Change name: Move file tab -> Sync tab
 - Update UI for Sync tab
+
+### Version 1.3.4 (2026-04-09)
+- Sync Tab: add "Auto-fill path" button 

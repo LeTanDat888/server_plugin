@@ -75,6 +75,7 @@ public final class AlignCommentsAction implements ActionListener {
         Node[] activatedNodes = TopComponent.getRegistry().getActivatedNodes();
         if (activatedNodes.length > 0) {
             EditorCookie cookie = activatedNodes[0].getLookup().lookup(EditorCookie.class);
+
             if (cookie != null) {
                 Map<String, Object> wIndexStaEnd = Common.getIndexStaEndOfSelectedText(cookie);
                 JTextComponent editor = Common.getFullSelectedLinesEditor(cookie);

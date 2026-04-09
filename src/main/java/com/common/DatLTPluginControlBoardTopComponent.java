@@ -27,8 +27,13 @@ import org.apache.commons.lang3.StringUtils;
 import org.netbeans.api.settings.ConvertAsProperties;
 import org.openide.awt.ActionID;
 import org.openide.filesystems.FileChooserBuilder;
+import org.openide.filesystems.FileUtil;
+import org.openide.loaders.DataObject;
+import org.openide.nodes.Node;
+import org.openide.util.Lookup;
 import org.openide.windows.TopComponent;
 import org.openide.util.NbBundle.Messages;
+import org.openide.util.Utilities;
 
 /**
  * Top component which displays something.
@@ -85,13 +90,22 @@ public final class DatLTPluginControlBoardTopComponent extends TopComponent {
         chbMoelaGym = new javax.swing.JCheckBox();
         chbMoelaCheck = new javax.swing.JCheckBox();
         chbAll = new javax.swing.JCheckBox();
+        btnQuickPath = new javax.swing.JButton();
         jPanel3 = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
         chbAutoAlign = new javax.swing.JCheckBox();
         jLabel3 = new javax.swing.JLabel();
         txtTabQuantity = new javax.swing.JTextField();
+        jPanel2 = new javax.swing.JPanel();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        txtSQL = new javax.swing.JTextArea();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        txtCode = new javax.swing.JTextArea();
+        btnSQLToCode = new javax.swing.JButton();
+        btnCodeToSQL = new javax.swing.JButton();
+        btnReset = new javax.swing.JButton();
 
-        setPreferredSize(new java.awt.Dimension(380, 270));
+        setPreferredSize(new java.awt.Dimension(380, 350));
 
         jLabel1.setBackground(new java.awt.Color(153, 204, 0));
         jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
@@ -141,7 +155,7 @@ public final class DatLTPluginControlBoardTopComponent extends TopComponent {
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 3;
-        gridBagConstraints.gridwidth = 3;
+        gridBagConstraints.gridwidth = 2;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
         gridBagConstraints.insets = new java.awt.Insets(5, 5, 0, 5);
         jPanel1.add(btnBrowse, gridBagConstraints);
@@ -228,6 +242,21 @@ public final class DatLTPluginControlBoardTopComponent extends TopComponent {
         gridBagConstraints.insets = new java.awt.Insets(5, 0, 0, 5);
         jPanel1.add(chbAll, gridBagConstraints);
 
+        org.openide.awt.Mnemonics.setLocalizedText(btnQuickPath, org.openide.util.NbBundle.getMessage(DatLTPluginControlBoardTopComponent.class, "DatLTPluginControlBoardTopComponent.btnQuickPath.text")); // NOI18N
+        btnQuickPath.setToolTipText(org.openide.util.NbBundle.getMessage(DatLTPluginControlBoardTopComponent.class, "DatLTPluginControlBoardTopComponent.btnQuickPath.toolTipText")); // NOI18N
+        btnQuickPath.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnQuickPathActionPerformed(evt);
+            }
+        });
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 2;
+        gridBagConstraints.gridy = 3;
+        gridBagConstraints.gridwidth = 2;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.FIRST_LINE_START;
+        gridBagConstraints.insets = new java.awt.Insets(5, 19, 0, 0);
+        jPanel1.add(btnQuickPath, gridBagConstraints);
+
         jTabbedPane1.addTab(org.openide.util.NbBundle.getMessage(DatLTPluginControlBoardTopComponent.class, "DatLTPluginControlBoardTopComponent.jPanel1.TabConstraints.tabTitle"), jPanel1); // NOI18N
 
         jLabel2.setLabelFor(chbAutoAlign);
@@ -256,10 +285,11 @@ public final class DatLTPluginControlBoardTopComponent extends TopComponent {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(chbAutoAlign))
                     .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addGap(5, 5, 5)
                         .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(txtTabQuantity, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGap(0, 0, Short.MAX_VALUE))
+                .addGap(0, 294, Short.MAX_VALUE))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -272,12 +302,80 @@ public final class DatLTPluginControlBoardTopComponent extends TopComponent {
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3)
                     .addComponent(txtTabQuantity, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(213, Short.MAX_VALUE))
         );
 
         chbAutoAlign.getAccessibleContext().setAccessibleName(org.openide.util.NbBundle.getMessage(DatLTPluginControlBoardTopComponent.class, "DatLTPluginControlBoardTopComponent.chbAutoAlign.AccessibleContext.accessibleName")); // NOI18N
 
         jTabbedPane1.addTab(org.openide.util.NbBundle.getMessage(DatLTPluginControlBoardTopComponent.class, "DatLTPluginControlBoardTopComponent.jPanel3.TabConstraints.tabTitle"), jPanel3); // NOI18N
+
+        jPanel2.setLayout(new java.awt.GridBagLayout());
+
+        txtSQL.setColumns(20);
+        txtSQL.setLineWrap(true);
+        txtSQL.setRows(5);
+        txtSQL.setToolTipText(org.openide.util.NbBundle.getMessage(DatLTPluginControlBoardTopComponent.class, "DatLTPluginControlBoardTopComponent.txtSQL.toolTipText")); // NOI18N
+        jScrollPane2.setViewportView(txtSQL);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.gridwidth = 3;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.weighty = 1.0;
+        gridBagConstraints.insets = new java.awt.Insets(6, 0, 0, 0);
+        jPanel2.add(jScrollPane2, gridBagConstraints);
+
+        txtCode.setColumns(20);
+        txtCode.setLineWrap(true);
+        txtCode.setRows(5);
+        txtCode.setToolTipText(org.openide.util.NbBundle.getMessage(DatLTPluginControlBoardTopComponent.class, "DatLTPluginControlBoardTopComponent.txtCode.toolTipText")); // NOI18N
+        jScrollPane3.setViewportView(txtCode);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 2;
+        gridBagConstraints.gridwidth = 3;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.weighty = 1.0;
+        gridBagConstraints.insets = new java.awt.Insets(18, 0, 6, 0);
+        jPanel2.add(jScrollPane3, gridBagConstraints);
+
+        org.openide.awt.Mnemonics.setLocalizedText(btnSQLToCode, org.openide.util.NbBundle.getMessage(DatLTPluginControlBoardTopComponent.class, "DatLTPluginControlBoardTopComponent.btnSQLToCode.text")); // NOI18N
+        btnSQLToCode.setToolTipText(org.openide.util.NbBundle.getMessage(DatLTPluginControlBoardTopComponent.class, "DatLTPluginControlBoardTopComponent.btnSQLToCode.toolTipText")); // NOI18N
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.insets = new java.awt.Insets(18, 76, 0, 0);
+        jPanel2.add(btnSQLToCode, gridBagConstraints);
+
+        org.openide.awt.Mnemonics.setLocalizedText(btnCodeToSQL, org.openide.util.NbBundle.getMessage(DatLTPluginControlBoardTopComponent.class, "DatLTPluginControlBoardTopComponent.btnCodeToSQL.text")); // NOI18N
+        btnCodeToSQL.setToolTipText(org.openide.util.NbBundle.getMessage(DatLTPluginControlBoardTopComponent.class, "DatLTPluginControlBoardTopComponent.btnCodeToSQL.toolTipText")); // NOI18N
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 2;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.insets = new java.awt.Insets(18, 68, 0, 0);
+        jPanel2.add(btnCodeToSQL, gridBagConstraints);
+
+        org.openide.awt.Mnemonics.setLocalizedText(btnReset, org.openide.util.NbBundle.getMessage(DatLTPluginControlBoardTopComponent.class, "DatLTPluginControlBoardTopComponent.btnReset.text")); // NOI18N
+        btnReset.setToolTipText(org.openide.util.NbBundle.getMessage(DatLTPluginControlBoardTopComponent.class, "DatLTPluginControlBoardTopComponent.btnReset.toolTipText")); // NOI18N
+        btnReset.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnResetActionPerformed(evt);
+            }
+        });
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.insets = new java.awt.Insets(18, 67, 0, 0);
+        jPanel2.add(btnReset, gridBagConstraints);
+
+        jTabbedPane1.addTab(org.openide.util.NbBundle.getMessage(DatLTPluginControlBoardTopComponent.class, "DatLTPluginControlBoardTopComponent.jPanel2.TabConstraints.tabTitle"), jPanel2); // NOI18N
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -296,7 +394,7 @@ public final class DatLTPluginControlBoardTopComponent extends TopComponent {
                 .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 16, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(6, 6, 6)
                 .addComponent(jTabbedPane1)
-                .addGap(6, 6, 6))
+                .addContainerGap())
         );
 
         jTabbedPane1.getAccessibleContext().setAccessibleName(org.openide.util.NbBundle.getMessage(DatLTPluginControlBoardTopComponent.class, "DatLTPluginControlBoardTopComponent.jTabbedPane1.AccessibleContext.accessibleName")); // NOI18N
@@ -432,8 +530,33 @@ public final class DatLTPluginControlBoardTopComponent extends TopComponent {
         }
     }//GEN-LAST:event_chbAllActionPerformed
 
+    private void btnResetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnResetActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnResetActionPerformed
+
+    private void btnQuickPathActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnQuickPathActionPerformed
+        resetLog();
+        String wKey = "DEV_SHARE";
+        String wCurrentFilePath = getCurrentFilePath();
+        Color wOchreC = new Color(204, 153, 51);
+
+        if (wCurrentFilePath.contains(wKey)) {
+            String wResult = wCurrentFilePath.substring(0, wCurrentFilePath.indexOf(wKey) + wKey.length());
+
+            txtFilePath.setText(StringUtils.EMPTY);
+            txtFilePath.setText(wResult);
+            appendLog("Result quick Path: " + wCurrentFilePath, wOchreC, false);
+        } else {
+            appendLog("The current file path is invalid!\n" + wCurrentFilePath, Color.RED, false);
+        }
+    }//GEN-LAST:event_btnQuickPathActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnBrowse;
+    private javax.swing.JButton btnCodeToSQL;
+    private javax.swing.JButton btnQuickPath;
+    private javax.swing.JButton btnReset;
+    private javax.swing.JButton btnSQLToCode;
     private javax.swing.JButton btnSync;
     private javax.swing.JCheckBox chbAll;
     private javax.swing.JCheckBox chbAutoAlign;
@@ -446,11 +569,16 @@ public final class DatLTPluginControlBoardTopComponent extends TopComponent {
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JTabbedPane jTabbedPane1;
+    private javax.swing.JTextArea txtCode;
     private javax.swing.JTextField txtFilePath;
     private javax.swing.JTextPane txtLog;
+    private javax.swing.JTextArea txtSQL;
     private javax.swing.JTextField txtTabQuantity;
     // End of variables declaration//GEN-END:variables
     @Override
@@ -637,5 +765,34 @@ public final class DatLTPluginControlBoardTopComponent extends TopComponent {
             cb.setBorderPainted(false);
         }
         cb.repaint();
+    }
+
+    /**
+     * Hàm lấy đường dẫn file đang mở trong Editor
+     * 
+     * @return 
+     */
+    private String getCurrentFilePath() {
+        String path = "";
+
+        try {
+            // Tìm DataObject từ tab hiện tại đang focus trong NetBeans
+            Node[] activatedNodes = TopComponent.getRegistry().getActivatedNodes();
+            DataObject ddo = activatedNodes[0].getLookup().lookup(DataObject.class);
+
+            if (ddo != null) {
+                File file = FileUtil.toFile(ddo.getPrimaryFile());
+                if (file != null) {
+                    path = file.getAbsolutePath();
+                }
+            }
+            return path;
+        } catch (Exception e) {
+            return e.toString();
+        }
+    }
+
+    private void resetLog() {
+        txtLog.setText(StringUtils.EMPTY);
     }
 }
