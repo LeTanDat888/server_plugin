@@ -14,6 +14,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import javax.swing.BorderFactory;
@@ -27,13 +28,13 @@ import org.apache.commons.lang3.StringUtils;
 import org.netbeans.api.settings.ConvertAsProperties;
 import org.openide.awt.ActionID;
 import org.openide.filesystems.FileChooserBuilder;
-import org.openide.filesystems.FileUtil;
+import org.openide.filesystems.FileObject;
 import org.openide.loaders.DataObject;
 import org.openide.nodes.Node;
-import org.openide.util.Lookup;
 import org.openide.windows.TopComponent;
 import org.openide.util.NbBundle.Messages;
-import org.openide.util.Utilities;
+import org.netbeans.api.project.Project;
+import org.netbeans.api.project.SourceGroup;
 
 /**
  * Top component which displays something.
@@ -60,6 +61,8 @@ import org.openide.util.Utilities;
     "HINT_DatLTPluginControlBoardTopComponent=This is a DatLT's Plugin Control Board window"
 })
 public final class DatLTPluginControlBoardTopComponent extends TopComponent {
+
+    private Map<String, String> wMapCHB = new HashMap<>();
 
     public DatLTPluginControlBoardTopComponent() {
         initComponents();
@@ -91,6 +94,8 @@ public final class DatLTPluginControlBoardTopComponent extends TopComponent {
         chbMoelaCheck = new javax.swing.JCheckBox();
         chbAll = new javax.swing.JCheckBox();
         btnQuickPath = new javax.swing.JButton();
+        chbBatBase = new javax.swing.JCheckBox();
+        chbJmSysBase = new javax.swing.JCheckBox();
         jPanel3 = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
         chbAutoAlign = new javax.swing.JCheckBox();
@@ -105,7 +110,7 @@ public final class DatLTPluginControlBoardTopComponent extends TopComponent {
         btnCodeToSQL = new javax.swing.JButton();
         btnReset = new javax.swing.JButton();
 
-        setPreferredSize(new java.awt.Dimension(380, 350));
+        setPreferredSize(new java.awt.Dimension(300, 350));
 
         jLabel1.setBackground(new java.awt.Color(153, 204, 0));
         jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
@@ -122,7 +127,7 @@ public final class DatLTPluginControlBoardTopComponent extends TopComponent {
         org.openide.awt.Mnemonics.setLocalizedText(jLabel4, org.openide.util.NbBundle.getMessage(DatLTPluginControlBoardTopComponent.class, "DatLTPluginControlBoardTopComponent.jLabel4.text")); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 1;
+        gridBagConstraints.gridy = 2;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
         gridBagConstraints.insets = new java.awt.Insets(5, 0, 0, 0);
         jPanel1.add(jLabel4, gridBagConstraints);
@@ -136,8 +141,8 @@ public final class DatLTPluginControlBoardTopComponent extends TopComponent {
         });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 1;
-        gridBagConstraints.gridwidth = 5;
+        gridBagConstraints.gridy = 2;
+        gridBagConstraints.gridwidth = 6;
         gridBagConstraints.gridheight = 2;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
@@ -154,7 +159,7 @@ public final class DatLTPluginControlBoardTopComponent extends TopComponent {
         });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 3;
+        gridBagConstraints.gridy = 4;
         gridBagConstraints.gridwidth = 2;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
         gridBagConstraints.insets = new java.awt.Insets(5, 5, 0, 5);
@@ -168,8 +173,8 @@ public final class DatLTPluginControlBoardTopComponent extends TopComponent {
         });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 4;
-        gridBagConstraints.gridy = 3;
-        gridBagConstraints.gridwidth = 5;
+        gridBagConstraints.gridy = 4;
+        gridBagConstraints.gridwidth = 4;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHEAST;
         gridBagConstraints.insets = new java.awt.Insets(5, 5, 0, 5);
         jPanel1.add(btnSync, gridBagConstraints);
@@ -180,8 +185,8 @@ public final class DatLTPluginControlBoardTopComponent extends TopComponent {
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 4;
-        gridBagConstraints.gridwidth = 6;
+        gridBagConstraints.gridy = 5;
+        gridBagConstraints.gridwidth = 7;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints.weightx = 1.0;
         gridBagConstraints.weighty = 1.0;
@@ -228,7 +233,6 @@ public final class DatLTPluginControlBoardTopComponent extends TopComponent {
         gridBagConstraints.insets = new java.awt.Insets(5, 0, 0, 10);
         jPanel1.add(chbMoelaCheck, gridBagConstraints);
 
-        chbAll.setSelected(true);
         org.openide.awt.Mnemonics.setLocalizedText(chbAll, org.openide.util.NbBundle.getMessage(DatLTPluginControlBoardTopComponent.class, "DatLTPluginControlBoardTopComponent.chbAll.text")); // NOI18N
         chbAll.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -236,7 +240,7 @@ public final class DatLTPluginControlBoardTopComponent extends TopComponent {
             }
         });
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 5;
+        gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 0;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.FIRST_LINE_END;
         gridBagConstraints.insets = new java.awt.Insets(5, 0, 0, 5);
@@ -251,11 +255,31 @@ public final class DatLTPluginControlBoardTopComponent extends TopComponent {
         });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 2;
-        gridBagConstraints.gridy = 3;
+        gridBagConstraints.gridy = 4;
         gridBagConstraints.gridwidth = 2;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.FIRST_LINE_START;
         gridBagConstraints.insets = new java.awt.Insets(5, 19, 0, 0);
         jPanel1.add(btnQuickPath, gridBagConstraints);
+
+        org.openide.awt.Mnemonics.setLocalizedText(chbBatBase, org.openide.util.NbBundle.getMessage(DatLTPluginControlBoardTopComponent.class, "DatLTPluginControlBoardTopComponent.chbBatBase.text")); // NOI18N
+        chbBatBase.setToolTipText(org.openide.util.NbBundle.getMessage(DatLTPluginControlBoardTopComponent.class, "DatLTPluginControlBoardTopComponent.chbBatBase.toolTipText")); // NOI18N
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.gridwidth = 2;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.FIRST_LINE_START;
+        gridBagConstraints.insets = new java.awt.Insets(5, 3, 0, 10);
+        jPanel1.add(chbBatBase, gridBagConstraints);
+
+        org.openide.awt.Mnemonics.setLocalizedText(chbJmSysBase, org.openide.util.NbBundle.getMessage(DatLTPluginControlBoardTopComponent.class, "DatLTPluginControlBoardTopComponent.chbJmSysBase.text")); // NOI18N
+        chbJmSysBase.setToolTipText(org.openide.util.NbBundle.getMessage(DatLTPluginControlBoardTopComponent.class, "DatLTPluginControlBoardTopComponent.chbJmSysBase.toolTipText")); // NOI18N
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 2;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.gridwidth = 3;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.FIRST_LINE_START;
+        gridBagConstraints.insets = new java.awt.Insets(5, 11, 0, 10);
+        jPanel1.add(chbJmSysBase, gridBagConstraints);
 
         jTabbedPane1.addTab(org.openide.util.NbBundle.getMessage(DatLTPluginControlBoardTopComponent.class, "DatLTPluginControlBoardTopComponent.jPanel1.TabConstraints.tabTitle"), jPanel1); // NOI18N
 
@@ -289,7 +313,7 @@ public final class DatLTPluginControlBoardTopComponent extends TopComponent {
                         .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(txtTabQuantity, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGap(0, 294, Short.MAX_VALUE))
+                .addGap(0, 106, Short.MAX_VALUE))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -324,7 +348,7 @@ public final class DatLTPluginControlBoardTopComponent extends TopComponent {
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints.weightx = 1.0;
         gridBagConstraints.weighty = 1.0;
-        gridBagConstraints.insets = new java.awt.Insets(6, 0, 0, 0);
+        gridBagConstraints.insets = new java.awt.Insets(6, 0, 6, 0);
         jPanel2.add(jScrollPane2, gridBagConstraints);
 
         txtCode.setColumns(20);
@@ -340,7 +364,7 @@ public final class DatLTPluginControlBoardTopComponent extends TopComponent {
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints.weightx = 1.0;
         gridBagConstraints.weighty = 1.0;
-        gridBagConstraints.insets = new java.awt.Insets(18, 0, 6, 0);
+        gridBagConstraints.insets = new java.awt.Insets(6, 0, 6, 0);
         jPanel2.add(jScrollPane3, gridBagConstraints);
 
         org.openide.awt.Mnemonics.setLocalizedText(btnSQLToCode, org.openide.util.NbBundle.getMessage(DatLTPluginControlBoardTopComponent.class, "DatLTPluginControlBoardTopComponent.btnSQLToCode.text")); // NOI18N
@@ -348,8 +372,8 @@ public final class DatLTPluginControlBoardTopComponent extends TopComponent {
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 1;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
-        gridBagConstraints.insets = new java.awt.Insets(18, 76, 0, 0);
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.insets = new java.awt.Insets(9, 35, 9, 35);
         jPanel2.add(btnSQLToCode, gridBagConstraints);
 
         org.openide.awt.Mnemonics.setLocalizedText(btnCodeToSQL, org.openide.util.NbBundle.getMessage(DatLTPluginControlBoardTopComponent.class, "DatLTPluginControlBoardTopComponent.btnCodeToSQL.text")); // NOI18N
@@ -357,8 +381,8 @@ public final class DatLTPluginControlBoardTopComponent extends TopComponent {
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 2;
         gridBagConstraints.gridy = 1;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
-        gridBagConstraints.insets = new java.awt.Insets(18, 68, 0, 0);
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.insets = new java.awt.Insets(9, 35, 9, 35);
         jPanel2.add(btnCodeToSQL, gridBagConstraints);
 
         org.openide.awt.Mnemonics.setLocalizedText(btnReset, org.openide.util.NbBundle.getMessage(DatLTPluginControlBoardTopComponent.class, "DatLTPluginControlBoardTopComponent.btnReset.text")); // NOI18N
@@ -371,8 +395,8 @@ public final class DatLTPluginControlBoardTopComponent extends TopComponent {
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 1;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
-        gridBagConstraints.insets = new java.awt.Insets(18, 67, 0, 0);
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.insets = new java.awt.Insets(9, 35, 9, 35);
         jPanel2.add(btnReset, gridBagConstraints);
 
         jTabbedPane1.addTab(org.openide.util.NbBundle.getMessage(DatLTPluginControlBoardTopComponent.class, "DatLTPluginControlBoardTopComponent.jPanel2.TabConstraints.tabTitle"), jPanel2); // NOI18N
@@ -452,6 +476,7 @@ public final class DatLTPluginControlBoardTopComponent extends TopComponent {
                             return;
                         }
 
+                        
                         // Kiểm tra và di chuyển file
                         if (chbMoelaCmn.isSelected()) {
                             if (copyFileCustom(wPathOri, wPathTar, Const.MoveFileName.MOELACMN)) {
@@ -482,6 +507,22 @@ public final class DatLTPluginControlBoardTopComponent extends TopComponent {
                                 wFileNameCopySuccess.add(Const.MoveFileName.MOELACHECK);
                             } else {
                                 wFileNameCopyFail.add(Const.MoveFileName.MOELACHECK);
+                            }
+                        }
+
+                        if (chbBatBase.isSelected()) {
+                            if (copyFileCustom(wPathOri, wPathTar, Const.MoveFileName.BATBASE)) {
+                                wFileNameCopySuccess.add(Const.MoveFileName.BATBASE);
+                            } else {
+                                wFileNameCopyFail.add(Const.MoveFileName.BATBASE);
+                            }
+                        }
+
+                        if (chbJmSysBase.isSelected()) {
+                            if (copyFileCustom(wPathOri, wPathTar, Const.MoveFileName.JMSYSBASE)) {
+                                wFileNameCopySuccess.add(Const.MoveFileName.JMSYSBASE);
+                            } else {
+                                wFileNameCopyFail.add(Const.MoveFileName.JMSYSBASE);
                             }
                         }
 
@@ -516,20 +557,6 @@ public final class DatLTPluginControlBoardTopComponent extends TopComponent {
         // TODO add your handling code here:
     }//GEN-LAST:event_txtFilePathActionPerformed
 
-    private void chbAllActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chbAllActionPerformed
-        if (chbAll.isSelected()) {
-            chbMoelaCmn.setSelected(true);
-            chbMoelaSQL.setSelected(true);
-            chbMoelaGym.setSelected(true);
-            chbMoelaCheck.setSelected(true);
-        } else {
-            chbMoelaCmn.setSelected(false);
-            chbMoelaSQL.setSelected(false);
-            chbMoelaGym.setSelected(false);
-            chbMoelaCheck.setSelected(false);
-        }
-    }//GEN-LAST:event_chbAllActionPerformed
-
     private void btnResetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnResetActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_btnResetActionPerformed
@@ -545,11 +572,29 @@ public final class DatLTPluginControlBoardTopComponent extends TopComponent {
 
             txtFilePath.setText(StringUtils.EMPTY);
             txtFilePath.setText(wResult);
-            appendLog("Result quick Path: " + wCurrentFilePath, wOchreC, false);
+            appendLog("From: " + wCurrentFilePath, wOchreC, false);
         } else {
-            appendLog("The current file path is invalid!\n" + wCurrentFilePath, Color.RED, false);
+            appendLog("Unknown error: " + wCurrentFilePath, Color.RED, false);
         }
     }//GEN-LAST:event_btnQuickPathActionPerformed
+
+    private void chbAllActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chbAllActionPerformed
+        if (chbAll.isSelected()) {
+            chbMoelaCmn.setSelected(true);
+            chbMoelaSQL.setSelected(true);
+            chbMoelaGym.setSelected(true);
+            chbMoelaCheck.setSelected(true);
+            chbBatBase.setSelected(true);
+            chbJmSysBase.setSelected(true);
+        } else {
+            chbMoelaCmn.setSelected(false);
+            chbMoelaSQL.setSelected(false);
+            chbMoelaGym.setSelected(false);
+            chbMoelaCheck.setSelected(false);
+            chbBatBase.setSelected(false);
+            chbJmSysBase.setSelected(false);
+        }
+    }//GEN-LAST:event_chbAllActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnBrowse;
@@ -560,6 +605,8 @@ public final class DatLTPluginControlBoardTopComponent extends TopComponent {
     private javax.swing.JButton btnSync;
     private javax.swing.JCheckBox chbAll;
     private javax.swing.JCheckBox chbAutoAlign;
+    private javax.swing.JCheckBox chbBatBase;
+    private javax.swing.JCheckBox chbJmSysBase;
     private javax.swing.JCheckBox chbMoelaCheck;
     private javax.swing.JCheckBox chbMoelaCmn;
     private javax.swing.JCheckBox chbMoelaGym;
@@ -768,27 +815,36 @@ public final class DatLTPluginControlBoardTopComponent extends TopComponent {
     }
 
     /**
-     * Hàm lấy đường dẫn file đang mở trong Editor
+     * Lấy path chỗ đang focus
      * 
      * @return 
      */
     private String getCurrentFilePath() {
-        String path = "";
-
         try {
-            // Tìm DataObject từ tab hiện tại đang focus trong NetBeans
-            Node[] activatedNodes = TopComponent.getRegistry().getActivatedNodes();
-            DataObject ddo = activatedNodes[0].getLookup().lookup(DataObject.class);
+            Node[] wNode = TopComponent.getRegistry().getActivatedNodes();
 
-            if (ddo != null) {
-                File file = FileUtil.toFile(ddo.getPrimaryFile());
-                if (file != null) {
-                    path = file.getAbsolutePath();
-                }
+            FileObject wFO = wNode[0].getLookup().lookup(FileObject.class);
+            if (wFO != null) {
+                return wFO.getPath();
             }
-            return path;
-        } catch (Exception e) {
-            return e.toString();
+
+            DataObject wDdo = wNode[0].getLookup().lookup(DataObject.class);
+            if (wDdo != null) {
+                return wDdo.getPrimaryFile().getPath();
+            }
+
+            Project project = wNode[0].getLookup().lookup(Project.class);
+            if (project != null) {
+                return project.getProjectDirectory().getPath();
+            }
+
+            SourceGroup wSG = wNode[0].getLookup().lookup(SourceGroup.class);
+            if (wSG != null) {
+                return wSG.getRootFolder().getPath();
+            }
+            return StringUtils.EMPTY;
+        } catch (Throwable t) {
+            return t.toString();
         }
     }
 

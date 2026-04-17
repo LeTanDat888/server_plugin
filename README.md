@@ -28,3 +28,6 @@
 
 ### Version 1.3.4 (2026-04-09)
 - Sync Tab: add "Auto-fill path" button 
+
+### Version 1.3.5 (2026-04-17)
+- Upgrade "Auto-fill path" button
