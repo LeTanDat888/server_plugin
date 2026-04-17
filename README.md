@@ -31,3 +31,6 @@
 
 ### Version 1.3.5 (2026-04-17)
 - Upgrade "Auto-fill path" button
+
+### Version 1.3.6 (2026-04-17)
+- Correct the misalignment of the Sync button.
