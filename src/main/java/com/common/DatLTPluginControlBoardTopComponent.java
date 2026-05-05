@@ -181,6 +181,7 @@ public final class DatLTPluginControlBoardTopComponent extends TopComponent {
 
         txtLog.setEditable(false);
         txtLog.setToolTipText(org.openide.util.NbBundle.getMessage(DatLTPluginControlBoardTopComponent.class, "DatLTPluginControlBoardTopComponent.txtLog.toolTipText")); // NOI18N
+        txtLog.setContentType("text/plain");
         jScrollPane1.setViewportView(txtLog);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -309,11 +310,10 @@ public final class DatLTPluginControlBoardTopComponent extends TopComponent {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(chbAutoAlign))
                     .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addGap(5, 5, 5)
                         .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGap(18, 18, 18)
                         .addComponent(txtTabQuantity, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGap(0, 113, Short.MAX_VALUE))
+                .addGap(0, 111, Short.MAX_VALUE))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -436,18 +436,24 @@ public final class DatLTPluginControlBoardTopComponent extends TopComponent {
         if (StringUtils.isNotBlank(wPath)) {
             appendLog("********** START SYNCING JAR FILES **********", wGreenColor, false);
 
-            if (!(chbMoelaCmn.isSelected() || chbMoelaSQL.isSelected() || chbMoelaGym.isSelected() || chbMoelaCheck.isSelected())) {
+            if (!(chbMoelaCmn.isSelected() || chbMoelaSQL.isSelected()
+                    || chbMoelaGym.isSelected() || chbMoelaCheck.isSelected()
+                    || chbBatBase.isSelected() || chbJmSysBase.isSelected())) {
                 appendLog("You haven't selected any files to sync!", new Color(204, 153, 0), false);
                 setCheckBoxStatus(chbMoelaCmn, false, true);
                 setCheckBoxStatus(chbMoelaSQL, false, true);
                 setCheckBoxStatus(chbMoelaGym, false, true);
                 setCheckBoxStatus(chbMoelaCheck, false, true);
+                setCheckBoxStatus(chbBatBase, false, true);
+                setCheckBoxStatus(chbJmSysBase, false, true);
                 return;
             } else {
                 setCheckBoxStatus(chbMoelaCmn, false, false);
                 setCheckBoxStatus(chbMoelaSQL, false, false);
                 setCheckBoxStatus(chbMoelaGym, false, false);
                 setCheckBoxStatus(chbMoelaCheck, false, false);
+                setCheckBoxStatus(chbBatBase, false, false);
+                setCheckBoxStatus(chbJmSysBase, false, false);
             }
 
             // 2. Chạy logic nặng trong một luồng riêng để không làm đơ UI

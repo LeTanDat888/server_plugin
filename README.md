@@ -34,3 +34,6 @@
 
 ### Version 1.3.6 (2026-04-17)
 - Correct the misalignment of the Sync button.
+
+### Version 1.3.7 (2026-05-05)
+- Troubleshooting issues preventing Batbase and JmSysBase files from synchronizing.
