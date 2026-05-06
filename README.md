@@ -37,3 +37,7 @@
 
 ### Version 1.3.7 (2026-05-05)
 - Troubleshooting issues preventing Batbase and JmSysBase files from synchronizing.
+
+### Version 1.4.0 (2026-05-06)
+- Add functionality to convert SQL from design files to code.
+- Add functionality to scroll through open code files and a Watches tab.
