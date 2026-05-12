@@ -41,3 +41,6 @@
 ### Version 1.4.0 (2026-05-06)
 - Add functionality to convert SQL from design files to code.
 - Add functionality to scroll through open code files and a Watches tab.
+
+### Version 1.4.1 (2026-05-12)
+- Fine-tune functionality
