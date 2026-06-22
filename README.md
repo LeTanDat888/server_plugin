@@ -44,3 +44,7 @@
 
 ### Version 1.4.1 (2026-05-12)
 - Fine-tune functionality
+
+### Version 1.5.0 (2026-06-22)
+- Can remember client actions.
+- Add News bar function

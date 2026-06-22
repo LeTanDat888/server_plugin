@@ -7,6 +7,7 @@ package com.common;
 import java.util.HashMap;
 import java.util.Map;
 import javax.swing.Icon;
+import javax.swing.JScrollPane;
 import javax.swing.text.JTextComponent;
 import javax.swing.text.StyledDocument;
 import org.apache.commons.lang3.StringUtils;
@@ -16,7 +17,9 @@ import org.openide.awt.NotificationDisplayer;
 import org.openide.cookies.EditorCookie;
 import org.openide.text.NbDocument;
 import javax.swing.text.BadLocationException;
+import org.openide.nodes.Node;
 import org.openide.util.Exceptions;
+import org.openide.util.ImageUtilities;
 import org.openide.windows.TopComponent;
 import org.openide.windows.WindowManager;
 
@@ -27,11 +30,12 @@ import org.openide.windows.WindowManager;
 public class Common {
 
     public static void showNoti(Icon pIcon, String pTitle, String pContent) {
+        Icon wInfoIcon = ImageUtilities.loadImageIcon(Common.getPathImageIcon("Point"), true);
         NotificationDisplayer.getDefault().notify(
-                pTitle, // Tiêu đề
-                pIcon, // Icon hiển thị
-                pContent, // Nội dung thông báo
-                null // Hành động khi click vào thông báo (để null nếu chỉ muốn xem)
+                pTitle,                            // Tiêu đề
+                pIcon == null ? wInfoIcon : pIcon, // Icon hiển thị
+                pContent,                          // Nội dung thông báo
+                null                               // Hành động khi click vào thông báo (để null nếu chỉ muốn xem)
         );
     }
     
@@ -199,6 +203,95 @@ public class Common {
 //            // display Align Comments Tab
 //            wBoard.setSelectedIndex(1);
             return wBoard;
+        }
+        return null;
+    }
+
+    public static void scrollEditor(boolean up, int valueScroll) {
+        // Luôn bọc trong invokeLater khi thay đổi UI
+        java.awt.EventQueue.invokeLater(() -> {
+            java.util.Set<TopComponent> opened = TopComponent.getRegistry().getOpened();
+
+            for (TopComponent tc : opened) {
+                EditorCookie ec = tc.getLookup().lookup(EditorCookie.class);
+
+                // Chỉ tác động nếu file đang hiện trên màn hình
+                if (ec != null && tc.isShowing()) {
+                    JTextComponent[] panes = ec.getOpenedPanes();
+                    if (panes != null && panes.length > 0) {
+                        JTextComponent editor = panes[0];
+                        javax.swing.JScrollPane scrollPane = (javax.swing.JScrollPane) javax.swing.SwingUtilities.getAncestorOfClass(javax.swing.JScrollPane.class, editor);
+
+                        if (scrollPane != null) {
+                            javax.swing.JScrollBar verticalBar = scrollPane.getVerticalScrollBar();
+
+                            if (verticalBar != null && verticalBar.isEnabled()) {
+                                int scrollAmount = up ? -valueScroll : valueScroll;
+                                int newValue = verticalBar.getValue() + scrollAmount;
+
+                                // Giới hạn giá trị để không cuộn quá phạm vi
+                                newValue = Math.max(verticalBar.getMinimum(),
+                                        Math.min(newValue, verticalBar.getMaximum()));
+
+                                verticalBar.setValue(newValue);
+                                return; // Thoát sau khi cuộn Editor đang hiển thị đầu tiên
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    public static void scrollWatches(boolean up, int valueScroll) {
+        // Nên chạy trên luồng giao diện để đảm bảo an toàn
+        java.awt.EventQueue.invokeLater(() -> {
+            TopComponent watchesTC = WindowManager.getDefault().findTopComponent("watchesView");
+            if (watchesTC != null) {
+                // Đảm bảo cửa sổ đang mở/hiện hữu
+                JScrollPane scrollPane = findScrollPane(watchesTC);
+                if (scrollPane != null) {
+                    javax.swing.JScrollBar verticalBar = scrollPane.getVerticalScrollBar();
+
+                    // Kiểm tra xem thanh cuộn có đang hoạt động không
+                    if (verticalBar != null && verticalBar.isEnabled()) {
+                        int currentVal = verticalBar.getValue();
+                        int scrollAmount = up ? -valueScroll : valueScroll;
+
+                        // Tính toán giá trị mới
+                        int newValue = currentVal + scrollAmount;
+
+                        // Chặn giới hạn để không cuộn quá lố
+                        if (newValue < verticalBar.getMinimum()) {
+                            newValue = verticalBar.getMinimum();
+                        }
+                        if (newValue > verticalBar.getMaximum()) {
+                            newValue = verticalBar.getMaximum();
+                        }
+
+                        verticalBar.setValue(newValue);
+                    }
+                }
+            }
+        });
+    }
+
+    /**
+     * Hàm bổ trợ để tìm JScrollPane bên trong một Container
+     * 
+     * @param container
+     * @return 
+     */
+    private static JScrollPane findScrollPane(java.awt.Container container) {
+        for (java.awt.Component child : container.getComponents()) {
+            if (child instanceof JScrollPane) {
+                return (JScrollPane) child;
+            } else if (child instanceof java.awt.Container) {
+                JScrollPane found = findScrollPane((java.awt.Container) child);
+                if (found != null) {
+                    return found;
+                }
+            }
         }
         return null;
     }

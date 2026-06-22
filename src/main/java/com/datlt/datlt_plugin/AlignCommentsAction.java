@@ -6,6 +6,7 @@ package com.datlt.datlt_plugin;
 
 import com.common.Common;
 import com.common.DatLTPluginControlBoardTopComponent;
+import java.awt.Color;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,8 +14,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.HashMap;
 import java.util.Map;
-import javax.swing.Icon;
-import javax.swing.JOptionPane;
+import java.util.Objects;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.JTextComponent;
 import javax.swing.text.StyledDocument;
@@ -29,7 +29,6 @@ import org.openide.cookies.EditorCookie;
 import org.openide.nodes.Node;
 import org.openide.text.NbDocument;
 import org.openide.util.Exceptions;
-import org.openide.util.ImageUtilities;
 import org.openide.util.NbBundle.Messages;
 import org.openide.windows.TopComponent;
 
@@ -47,23 +46,11 @@ import org.openide.windows.TopComponent;
 })
 @Messages("CTL_AlignCommentsAction=Align Comments")
 public final class AlignCommentsAction implements ActionListener {
-
-    /*
-     *
-     */
-    private static final String TITLE_POPUP = "Align Comments";
-
-    /*
-     *
-     */
-    private static final String TITLE_INPUT = "Số Tab giữa comment và code dài nhất \n (Vui lòng nhập -1 để sử dụng Auto format): ";
-
-    /*
-     *
-     */
-    private static final String INIT_VALUE = "-1";
-
     private final EditCookie context;
+
+    private boolean isAutoFormat = false;
+
+    private int commentSpacing = 0;
 
     public AlignCommentsAction(EditCookie context) {
         this.context = context;
@@ -71,7 +58,7 @@ public final class AlignCommentsAction implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent ev) {
-        DatLTPluginControlBoardTopComponent wBoard = Common.getControllBoard();
+        DatLTPluginControlBoardTopComponent wBoardDatlt = Common.getControllBoard();
         Node[] activatedNodes = TopComponent.getRegistry().getActivatedNodes();
         if (activatedNodes.length > 0) {
             EditorCookie cookie = activatedNodes[0].getLookup().lookup(EditorCookie.class);
@@ -82,21 +69,18 @@ public final class AlignCommentsAction implements ActionListener {
                 String wSelectedText = editor.getSelectedText();
 
                 if (StringUtils.isNotBlank(wSelectedText)) {
-                    Map<String, Object> wMapVar = wBoard == null ? new HashMap<>() : wBoard.getVar(1);
-                    String wTabQuantiy;
-                    boolean wIsAutoFormat;
-                    boolean wChbAutoAlign = MapUtils.getBoolean(wMapVar, "chbAutoAlign", false);
-                    if (wBoard == null || !wChbAutoAlign) {
-                        wTabQuantiy = Common.showPopUpReceiveVar(TITLE_POPUP, TITLE_INPUT, INIT_VALUE);
-
-                        // Dừng xử lí nếu người dùng nhấn cancel
-                        if (StringUtils.isBlank(wTabQuantiy)) return;
-
-                        wIsAutoFormat = "-1".equals(wTabQuantiy);
-
+                    if (wBoardDatlt == null) {
+                        isAutoFormat = true;
                     } else {
-                        wTabQuantiy = (String) wMapVar.get("txtTabQuantity");
-                        wIsAutoFormat = wChbAutoAlign;
+                        Map<String, Object> wMapVar = wBoardDatlt.getVar(1);
+                        isAutoFormat = MapUtils.getBoolean(wMapVar, "chbAutoAlign", true);
+                        String wTxtTabQuantity = (String) wMapVar.get("txtTabQuantity");
+                        if (StringUtils.isBlank(wTxtTabQuantity)) {
+                            isAutoFormat = true;
+                        } else {
+                            commentSpacing = Integer.parseInt(wTxtTabQuantity) * 4;
+                            
+                        }
                     }
 
                     // Chia đoạn văn bản thành danh sách các dòng
@@ -114,11 +98,8 @@ public final class AlignCommentsAction implements ActionListener {
                     }
 
                     int mostFrequentPosition = maxCodeLength;
-                    int wTab = Integer.parseInt(wTabQuantiy);
-                    int wSpaceQ = 0;
-
                     // Trường hợp tự động format
-                    if (wIsAutoFormat) {
+                    if (isAutoFormat) {
                         List<Integer> wCommentPositions = new ArrayList<>();
                         Map<Integer, Integer> wCommentPositionMap = new HashMap<>();
 
@@ -144,9 +125,7 @@ public final class AlignCommentsAction implements ActionListener {
                                 highestCount = entry.getValue();
                                 mostFrequentPosition = entry.getKey();
                             }
-                        }   
-                    } else {
-                        wSpaceQ = wTab * 4; // Quy đổi tab ra space (1 tab = 4 space)
+                        }
                     }
 
                     // Xây dựng lại các dòng đã được căn lề
@@ -159,12 +138,12 @@ public final class AlignCommentsAction implements ActionListener {
                             String commentPart = line.substring(commentIndex);
 
                             // Trường hợp tự động format thì tính toán lại khoảng cách
-                            if (wIsAutoFormat) {
+                            if (isAutoFormat) {
                                 // Thêm khoảng trắng để đẩy comment ra vị trí chỉ định
                                 sb.append(StringUtils.rightPad(codePart, mostFrequentPosition));
                             } else {
                                 // Thêm khoảng trắng để đẩy comment ra vị trí chỉ định
-                                sb.append(StringUtils.rightPad(codePart, maxCodeLength + wSpaceQ));
+                                sb.append(StringUtils.rightPad(codePart, maxCodeLength + commentSpacing));
                             }
 
                             sb.append(commentPart);
@@ -184,6 +163,9 @@ public final class AlignCommentsAction implements ActionListener {
                     StyledDocument doc = cookie.getDocument();
                     if (doc != null) {
                         try {
+                            // Lưu lại vị trí bắt đầu trước khi thực hiện thay đổi
+                            int selectionStart = editor.getSelectionStart();
+
                             NbDocument.runAtomicAsUser(doc, () -> {
                                 try {
                                     int start = editor.getSelectionStart();
@@ -194,13 +176,17 @@ public final class AlignCommentsAction implements ActionListener {
                                     Exceptions.printStackTrace(ex);
                                 }
                             });
+
+                            // Thiết lập lại vùng chọn từ vị trí bắt đầu cũ cộng với độ dài văn bản mới
+                            editor.setSelectionStart(selectionStart);
+                            editor.setSelectionEnd(selectionStart + newText.length() - 1);
                         } catch (BadLocationException ex) {
                             Exceptions.printStackTrace(ex);
                         }
                     }
 
                     // Hiển thị thông báo thành công
-                    Icon infoIcon = ImageUtilities.loadImageIcon(Common.getPathImageIcon("Point"), true);
+//                    Icon infoIcon = ImageUtilities.loadImageIcon(Common.getPathImageIcon("Point"), true);
 
                     String wContentNoti = StringUtils.EMPTY;
                     if (MapUtils.isNotEmpty(wIndexStaEnd)) {
@@ -208,17 +194,22 @@ public final class AlignCommentsAction implements ActionListener {
                         int wIdxEnd = (int) wIndexStaEnd.get("end");
 
                         if (wIdxSta == wIdxEnd) {
-                            wContentNoti = StringUtils.join("Đã căn thẳng hàng các comment dòng ", wIdxSta);
+                            wContentNoti = StringUtils.join("Đã căn thẳng hàng comment dòng ", wIdxSta);
                         } else if (wIdxSta > wIdxEnd) {
-                            wContentNoti = StringUtils.join("Đã căn thẳng hàng các comment từ dòng ", wIdxEnd, " -> ", wIdxSta);
+                            wContentNoti = StringUtils.join("Đã căn thẳng hàng các comment từ dòng ", wIdxEnd, " → ", wIdxSta);
                         } else {
-                            wContentNoti = StringUtils.join("Đã căn thẳng hàng các comment từ dòng ", wIdxSta, " -> ", wIdxEnd);
+                            wContentNoti = StringUtils.join("Đã căn thẳng hàng các comment từ dòng ", wIdxSta, " → ", wIdxEnd);
                         }
                     }
 
-                    Common.showNoti(infoIcon, "Format thành công", wContentNoti);
+                    if (Objects.nonNull(wBoardDatlt)) {
+                        wBoardDatlt.appendLogAC("☆☆☆" + (isAutoFormat ? "Auto" : "Manual") + " Format☆☆☆", Color.CYAN, false);
+                        wBoardDatlt.appendLogAC("Format thành công! " + wContentNoti, Color.BLACK, true);
+                    }
+//                    Common.showNoti(infoIcon, "Format thành công", wContentNoti);
                 } else {
-                    JOptionPane.showMessageDialog(null, "Vui lòng bôi đen đoạn code có chứa comment!");
+                    if (Objects.nonNull(wBoardDatlt)) wBoardDatlt.appendLogAC("Vui lòng bôi đen đoạn code có chứa comment!", Color.RED, true);
+//                    JOptionPane.showMessageDialog(null, "Vui lòng bôi đen đoạn code có chứa comment!");
                 }
             }
         }
