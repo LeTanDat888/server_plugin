@@ -53,7 +53,9 @@ import javax.swing.text.ParagraphView;
 import javax.swing.text.StyledEditorKit;
 import javax.swing.text.View;
 import javax.swing.text.ViewFactory;
+import org.openide.util.Exceptions;
 import org.openide.util.NbPreferences;
+import org.openide.util.RequestProcessor;
 
 /**
  * Top component which displays something.
@@ -85,6 +87,20 @@ public final class DatLTPluginControlBoardTopComponent extends TopComponent {
     // Cờ đánh dấu: Chưa load xong thì KHÔNG ĐƯỢC SAVE
     private boolean isLoaded = false;
 
+    // Ghi file config chạy ngoài EDT + gom nhiều lần gọi liên tiếp thành 1 lần
+    // ghi. saveUserConfig() được gọi ở ~17 chỗ (mỗi lần tick checkbox, đổi tab,
+    // mất focus...), ghi thẳng ra đĩa tại chỗ sẽ làm khựng giao diện.
+    private static final int SAVE_DELAY_MS = 500;
+    private static final RequestProcessor SAVE_RP
+            = new RequestProcessor("DatLTPlugin-SaveConfig", 1, true);
+    private volatile PluginConfig wPendingConfig;
+    private final RequestProcessor.Task wSaveTask = SAVE_RP.create(new Runnable() {
+        @Override
+        public void run() {
+            writePendingConfig();
+        }
+    });
+
     public DatLTPluginControlBoardTopComponent() {
         System.setProperty("awt.useSystemAAFontSettings", "on");
         System.setProperty("swing.aatext", "true");
@@ -92,6 +108,69 @@ public final class DatLTPluginControlBoardTopComponent extends TopComponent {
         initComponents();
         setName(Bundle.CTL_DatLTPluginControlBoardTopComponent());
         setToolTipText(Bundle.HINT_DatLTPluginControlBoardTopComponent());
+        registerAutoSaveListeners();
+    }
+
+    /**
+     * Gắn thêm các listener tự động lưu cấu hình.
+     *
+     * Viết ở ngoài initComponents() vì initComponents() là code do Form Editor
+     * sinh ra, sửa trực tiếp trong đó sẽ bị ghi đè khi mở lại file .form.
+     */
+    private void registerAutoSaveListeners() {
+        // JSpinner tự đẩy focus xuống JFormattedTextField bên trong, nên
+        // focusLost gắn trên chính JSpinner gần như không bao giờ chạy.
+        addSpinnerAutoSave(spnEditorScroll);
+        addSpinnerAutoSave(spnWatchesScroll);
+
+        // JTextField chỉ bắn ActionEvent khi nhấn Enter -> gõ xong click ra chỗ
+        // khác là mất dữ liệu. Lưu thêm khi mất focus.
+        addFocusLostAutoSave(txtFilePath);
+        addFocusLostAutoSave(txtTabQuantity);
+        addFocusLostAutoSave(txtNameVarSB);
+    }
+
+    private void addSpinnerAutoSave(javax.swing.JSpinner pSpinner) {
+        java.awt.Component wEditor = pSpinner.getEditor();
+        if (wEditor instanceof javax.swing.JSpinner.DefaultEditor) {
+            // Bấm mũi tên tăng/giảm cũng đẩy focus vào text field này,
+            // nên chỉ cần bắt focusLost ở đây là đủ cho cả 2 cách nhập.
+            addFocusLostAutoSave(((javax.swing.JSpinner.DefaultEditor) wEditor).getTextField());
+        }
+    }
+
+    private void addFocusLostAutoSave(javax.swing.text.JTextComponent pField) {
+        if (pField == null) {
+            return;
+        }
+        pField.addFocusListener(new java.awt.event.FocusAdapter() {
+            @Override
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                saveUserConfig();
+            }
+        });
+    }
+
+    /**
+     * Cập nhật ô "chọn tất cả" theo 6 checkbox con.
+     *
+     * Không lưu riêng trạng thái của chbAll vào file config: nó là giá trị suy
+     * ra được, lưu riêng sẽ có lúc lệch với các checkbox con.
+     *
+     * setSelected() chỉ bắn ChangeEvent chứ không bắn ActionEvent, nên không
+     * gọi ngược lại chbAllActionPerformed -> không có đệ quy.
+     */
+    private void syncChbAllFromChildren() {
+        boolean wAllSelected = chbMoelaCmn.isSelected()
+                && chbMoelaSQL.isSelected()
+                && chbMoelaGym.isSelected()
+                && chbMoelaCheck.isSelected()
+                && chbBatBase.isSelected()
+                && chbJmSysBase.isSelected();
+
+        if (chbAll.isSelected() != wAllSelected) {
+            chbAll.setSelected(wAllSelected);
+        }
     }
 
     /**
@@ -1139,26 +1218,32 @@ public final class DatLTPluginControlBoardTopComponent extends TopComponent {
     }//GEN-LAST:event_chbAllStateChanged
 
     private void chbMoelaCmnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chbMoelaCmnActionPerformed
+        syncChbAllFromChildren();
         saveUserConfig();
     }//GEN-LAST:event_chbMoelaCmnActionPerformed
 
     private void chbMoelaSQLActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chbMoelaSQLActionPerformed
+        syncChbAllFromChildren();
         saveUserConfig();
     }//GEN-LAST:event_chbMoelaSQLActionPerformed
 
     private void chbMoelaGymActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chbMoelaGymActionPerformed
+        syncChbAllFromChildren();
         saveUserConfig();
     }//GEN-LAST:event_chbMoelaGymActionPerformed
 
     private void chbMoelaCheckActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chbMoelaCheckActionPerformed
+        syncChbAllFromChildren();
         saveUserConfig();
     }//GEN-LAST:event_chbMoelaCheckActionPerformed
 
     private void chbBatBaseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chbBatBaseActionPerformed
+        syncChbAllFromChildren();
         saveUserConfig();
     }//GEN-LAST:event_chbBatBaseActionPerformed
 
     private void chbJmSysBaseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chbJmSysBaseActionPerformed
+        syncChbAllFromChildren();
         saveUserConfig();
     }//GEN-LAST:event_chbJmSysBaseActionPerformed
 
@@ -1237,17 +1322,34 @@ public final class DatLTPluginControlBoardTopComponent extends TopComponent {
     @Override
     public void componentOpened() {
         super.componentOpened();
-        // Tự động điền lại toàn bộ dữ liệu cũ
-        loadUserConfig();
-        isLoaded = true;
+        try {
+            // Tự động điền lại toàn bộ dữ liệu cũ
+            loadUserConfig();
+        } catch (Exception e) {
+            // Load hỏng thì vẫn phải cho phép lưu. Nếu để exception văng ra
+            // trước khi bật isLoaded, saveUserConfig() sẽ return sớm và chết
+            // im lặng suốt cả phiên làm việc.
+            Exceptions.printStackTrace(e);
+        } finally {
+            isLoaded = true;
+        }
     }
 
     @Override
     public void componentClosed() {
         // Tự động lưu lại trước khi tắt
-        if (isLoaded) saveUserConfig();
-        // Reset lại cờ khi đóng hẳn component
-        isLoaded = false; 
+        try {
+            if (isLoaded) {
+                saveUserConfig();
+                // Đóng cửa sổ rồi thì task hẹn giờ không kịp chạy -> ghi ngay
+                flushUserConfig();
+            }
+        } catch (Exception e) {
+            Exceptions.printStackTrace(e);
+        } finally {
+            // Reset lại cờ khi đóng hẳn component
+            isLoaded = false;
+        }
         super.componentClosed();
     }
 
@@ -1606,6 +1708,10 @@ public final class DatLTPluginControlBoardTopComponent extends TopComponent {
             return;
         }
 
+        if (wPluginConfig == null) {
+            wPluginConfig = new PluginConfig();
+        }
+
         int wTabIdx = jTabbedPane1.getSelectedIndex();
         wPluginConfig.setSelected_tab_index(wTabIdx);
 
@@ -1637,15 +1743,43 @@ public final class DatLTPluginControlBoardTopComponent extends TopComponent {
         wPluginConfig.setSpn_editorscroll((int) spnEditorScroll.getValue());
         wPluginConfig.setSpn_watchesscroll((int) spnWatchesScroll.getValue());
 
-        PluginConfigFileService.SaveConfig(wPluginConfig);
+        // Chụp lại trạng thái ngay trên EDT rồi hẹn giờ ghi ở thread khác.
+        // Gọi schedule() lại khi task còn đang chờ sẽ dời lịch, nên một tràng
+        // thao tác liên tiếp chỉ tốn đúng 1 lần ghi đĩa.
+        wPendingConfig = new PluginConfig(wPluginConfig);
+        wSaveTask.schedule(SAVE_DELAY_MS);
+    }
+
+    /**
+     * Ghi ngay lập tức cấu hình đang chờ, không đợi hết SAVE_DELAY_MS.
+     *
+     * Gọi khi đóng component - lúc đó không còn cơ hội để task hẹn giờ chạy.
+     */
+    private void flushUserConfig() {
+        // Hủy lần hẹn đang chờ. Nếu task đã kịp chạy rồi thì cancel() trả false,
+        // lúc đó ghi lại lần nữa cũng vô hại vì nội dung y hệt.
+        wSaveTask.cancel();
+        writePendingConfig();
+    }
+
+    // synchronized: cancel() trả false khi task nền đã kịp chạy, lúc đó EDT và
+    // thread nền có thể cùng ghi một lúc.
+    private synchronized void writePendingConfig() {
+        PluginConfig wSnapshot = wPendingConfig;
+        if (wSnapshot != null) {
+            PluginConfigFileService.SaveConfig(wSnapshot);
+        }
     }
 
     public void loadUserConfig() {
         wPluginConfig = PluginConfigFileService.getObjectConfig();
+        if (wPluginConfig == null) {
+            wPluginConfig = new PluginConfig();
+        }
 
         // Khôi phục lại Tab đang đứng trước đó
         int savedTabIndex = wPluginConfig.getSelected_tab_index();
-        if (savedTabIndex < jTabbedPane1.getTabCount()) {
+        if (savedTabIndex >= 0 && savedTabIndex < jTabbedPane1.getTabCount()) {
             jTabbedPane1.setSelectedIndex(savedTabIndex);
         }
 
@@ -1658,18 +1792,19 @@ public final class DatLTPluginControlBoardTopComponent extends TopComponent {
         chbMoelaCheck.setSelected(wPluginConfig.isChb_moelacheck());
         chbBatBase.setSelected(wPluginConfig.isChb_batbase());
         chbJmSysBase.setSelected(wPluginConfig.isChb_jmsysbase());
-        txtFilePath.setText(wPluginConfig.getTxt_filepath());
+        syncChbAllFromChildren();
+        txtFilePath.setText(StringUtils.defaultString(wPluginConfig.getTxt_filepath()));
 
         /**
          *Align Cmt Tab*
          */
         chbAutoAlign.setSelected(wPluginConfig.isChb_autoalign());
-        txtTabQuantity.setText(wPluginConfig.getTxt_tabquantity());
+        txtTabQuantity.setText(StringUtils.defaultString(wPluginConfig.getTxt_tabquantity()));
 
         /**
          *SQL↔Code Tab*
          */
-        txtNameVarSB.setText(wPluginConfig.getTxt_namevarsb());
+        txtNameVarSB.setText(StringUtils.defaultString(wPluginConfig.getTxt_namevarsb()));
 
         /**
          *Align Cmt Tab*

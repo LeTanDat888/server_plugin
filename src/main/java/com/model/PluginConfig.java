@@ -39,4 +39,29 @@ public class PluginConfig {
 
     public PluginConfig() {
     }
+
+    /**
+     * Copy constructor.
+     *
+     * Dùng để chụp lại trạng thái trên EDT rồi đưa xuống thread ghi file, tránh
+     * việc Jackson đang serialize thì EDT sửa object.
+     */
+    public PluginConfig(PluginConfig pSource) {
+        if (pSource == null) {
+            return;
+        }
+        this.selected_tab_index = pSource.selected_tab_index;
+        this.chb_moelacmn = pSource.chb_moelacmn;
+        this.chb_moelasql = pSource.chb_moelasql;
+        this.chb_moelagym = pSource.chb_moelagym;
+        this.chb_moelacheck = pSource.chb_moelacheck;
+        this.chb_batbase = pSource.chb_batbase;
+        this.chb_jmsysbase = pSource.chb_jmsysbase;
+        this.txt_filepath = pSource.txt_filepath;
+        this.chb_autoalign = pSource.chb_autoalign;
+        this.txt_tabquantity = pSource.txt_tabquantity;
+        this.txt_namevarsb = pSource.txt_namevarsb;
+        this.spn_editorscroll = pSource.spn_editorscroll;
+        this.spn_watchesscroll = pSource.spn_watchesscroll;
+    }
 }

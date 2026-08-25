@@ -30,13 +30,19 @@ public final class OpenControlBoard implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         TopComponent wTC = WindowManager.getDefault().findTopComponent("DatLTPluginControlBoardTopComponent");
 
-        if (wTC instanceof DatLTPluginControlBoardTopComponent && !wTC.isOpened()) {
-            DatLTPluginControlBoardTopComponent wBoard = (DatLTPluginControlBoardTopComponent) wTC;
-            wBoard.open();
-            wBoard.requestActive();
-        } else {
+        // Chỉ báo lỗi khi thực sự không tìm thấy cửa sổ.
+        if (!(wTC instanceof DatLTPluginControlBoardTopComponent)) {
             String wContentNoti = "Vui lòng liên hệ người phát triển để sữa lỗi!";
             Common.showNoti(null, "Mở control board thất bại!", wContentNoti);
+            return;
         }
+
+        DatLTPluginControlBoardTopComponent wBoard = (DatLTPluginControlBoardTopComponent) wTC;
+
+        // Đang mở sẵn thì chỉ cần đưa ra trước, không phải lỗi
+        if (!wBoard.isOpened()) {
+            wBoard.open();
+        }
+        wBoard.requestActive();
     }
 }
