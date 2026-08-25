@@ -8,7 +8,7 @@
 
     <groupId>com.datlt</groupId>
     <artifactId>datlt_plugin</artifactId>
-    <version>1.3.7</version>
+    <version>1.5.1</version>
     <packaging>nbm</packaging>
 
     <properties>
@@ -29,6 +29,12 @@
                     <licenseFile>src/main/nbm/license.txt</licenseFile>
                     <author>Author Name</author>
                     <homePageUrl>http://example.com</homePageUrl>
+
+                    <signature>
+                        <keystore>${project.basedir}/my-keystore.jks</keystore>
+                        <alias>datlt_plugin_key</alias>
+                        <storepass>1234568</storepass>
+                    </signature>
                 </configuration>
             </plugin>
             <plugin>
@@ -87,13 +93,13 @@
         <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-openide-nodes</artifactId>
-            <version>RELEASE210</version>
+            <version>${netbeans.version}</version>
         </dependency>
 
         <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-openide-windows</artifactId>
-            <version>RELEASE210</version>
+            <version>${netbeans.version}</version>
         </dependency>
 
         <dependency>
@@ -146,27 +152,48 @@
         <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-netbeans-modules-settings</artifactId>
-            <version>RELEASE210</version>
+            <version>${netbeans.version}</version>
         </dependency>
         <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-openide-filesystems-nb</artifactId>
-            <version>RELEASE210</version>
+            <version>${netbeans.version}</version>
         </dependency>
         <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-openide-loaders</artifactId>
-            <version>RELEASE210</version>
+            <version>${netbeans.version}</version>
         </dependency>
         <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-netbeans-modules-projectapi</artifactId>
-            <version>RELEASE210</version> 
+            <version>${netbeans.version}</version> 
         </dependency>
         <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-netbeans-modules-projectuiapi</artifactId>
-            <version>RELEASE210</version>
+            <version>${netbeans.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.18.32</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.netbeans.api</groupId>
+            <artifactId>org-netbeans-modules-options-api</artifactId>
+            <version>${netbeans.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>2.17.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.netbeans.api</groupId>
+            <artifactId>org-openide-modules</artifactId>
+            <version>${netbeans.version}</version>
         </dependency>
     </dependencies>
 

@@ -51,6 +51,11 @@ public class Const {
         public static final String TXT = ".txt";
 
         /**
+         * txt
+         */
+        public static final String CSV = ".csv";
+
+        /**
          * jar
          */
         public static final String JAR = ".jar";

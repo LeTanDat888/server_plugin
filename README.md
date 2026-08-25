@@ -48,3 +48,6 @@
 ### Version 1.5.0 (2026-06-22)
 - Can remember client actions.
 - Add News bar function
+
+### Version 1.5.1 (2026-08-25)
+- Fixed an issue where user configuration was not saved.

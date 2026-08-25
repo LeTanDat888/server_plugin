@@ -4,6 +4,8 @@
  */
 package com.common;
 
+import com.model.PluginConfig;
+import com.service.PluginConfigFileService;
 import java.awt.Color;
 import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
@@ -78,6 +80,10 @@ import org.openide.util.NbPreferences;
     "HINT_DatLTPluginControlBoardTopComponent=This is a DatLT's Plugin Control Board window"
 })
 public final class DatLTPluginControlBoardTopComponent extends TopComponent {
+
+    private PluginConfig wPluginConfig = new PluginConfig();
+    // Cờ đánh dấu: Chưa load xong thì KHÔNG ĐƯỢC SAVE
+    private boolean isLoaded = false;
 
     public DatLTPluginControlBoardTopComponent() {
         System.setProperty("awt.useSystemAAFontSettings", "on");
@@ -1005,7 +1011,7 @@ public final class DatLTPluginControlBoardTopComponent extends TopComponent {
             appendLog(txtLog, "PLEASE SELECT AN EXECUTION FOLDER...", Color.RED, false);
         }
         
-        saveUserPreferences(false);
+        saveUserConfig();
     }//GEN-LAST:event_btnSyncActionPerformed
 
     private void btnBrowseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBrowseActionPerformed
@@ -1019,11 +1025,11 @@ public final class DatLTPluginControlBoardTopComponent extends TopComponent {
             // Đưa đường dẫn đã chọn vào TextField
             txtFilePath.setText(file.getAbsolutePath());
         }
-        saveUserPreferences(false);
+        saveUserConfig();
     }//GEN-LAST:event_btnBrowseActionPerformed
 
     private void txtFilePathActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtFilePathActionPerformed
-        saveUserPreferences(false);
+        saveUserConfig();
     }//GEN-LAST:event_txtFilePathActionPerformed
 
     private void btnResetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnResetActionPerformed
@@ -1047,7 +1053,7 @@ public final class DatLTPluginControlBoardTopComponent extends TopComponent {
             appendLog(txtLog, "Unknown error: " + wCurrentFilePath, Color.RED, false);
         }
         
-        saveUserPreferences(false);
+        saveUserConfig();
     }//GEN-LAST:event_btnQuickPathActionPerformed
 
     private void chbAllActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chbAllActionPerformed
@@ -1066,7 +1072,7 @@ public final class DatLTPluginControlBoardTopComponent extends TopComponent {
             chbBatBase.setSelected(false);
             chbJmSysBase.setSelected(false);
         }
-        saveUserPreferences(false);
+        saveUserConfig();
     }//GEN-LAST:event_chbAllActionPerformed
 
     private void btnSQLToCodeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSQLToCodeActionPerformed
@@ -1125,7 +1131,7 @@ public final class DatLTPluginControlBoardTopComponent extends TopComponent {
     }//GEN-LAST:event_btnResetACActionPerformed
 
     private void jTabbedPane1StateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jTabbedPane1StateChanged
-        saveUserPreferences(false);
+        saveUserConfig();
     }//GEN-LAST:event_jTabbedPane1StateChanged
 
     private void chbAllStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_chbAllStateChanged
@@ -1133,47 +1139,47 @@ public final class DatLTPluginControlBoardTopComponent extends TopComponent {
     }//GEN-LAST:event_chbAllStateChanged
 
     private void chbMoelaCmnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chbMoelaCmnActionPerformed
-        saveUserPreferences(false);
+        saveUserConfig();
     }//GEN-LAST:event_chbMoelaCmnActionPerformed
 
     private void chbMoelaSQLActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chbMoelaSQLActionPerformed
-        saveUserPreferences(false);
+        saveUserConfig();
     }//GEN-LAST:event_chbMoelaSQLActionPerformed
 
     private void chbMoelaGymActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chbMoelaGymActionPerformed
-        saveUserPreferences(false);
+        saveUserConfig();
     }//GEN-LAST:event_chbMoelaGymActionPerformed
 
     private void chbMoelaCheckActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chbMoelaCheckActionPerformed
-        saveUserPreferences(false);
+        saveUserConfig();
     }//GEN-LAST:event_chbMoelaCheckActionPerformed
 
     private void chbBatBaseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chbBatBaseActionPerformed
-        saveUserPreferences(false);
+        saveUserConfig();
     }//GEN-LAST:event_chbBatBaseActionPerformed
 
     private void chbJmSysBaseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chbJmSysBaseActionPerformed
-        saveUserPreferences(false);
+        saveUserConfig();
     }//GEN-LAST:event_chbJmSysBaseActionPerformed
 
     private void chbAutoAlignActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chbAutoAlignActionPerformed
-        saveUserPreferences(false);
+        saveUserConfig();
     }//GEN-LAST:event_chbAutoAlignActionPerformed
 
     private void txtTabQuantityActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtTabQuantityActionPerformed
-        saveUserPreferences(false);
+        saveUserConfig();
     }//GEN-LAST:event_txtTabQuantityActionPerformed
 
     private void txtNameVarSBActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtNameVarSBActionPerformed
-        saveUserPreferences(false);
+        saveUserConfig();
     }//GEN-LAST:event_txtNameVarSBActionPerformed
 
     private void spnEditorScrollFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_spnEditorScrollFocusLost
-        saveUserPreferences(false);
+        saveUserConfig();
     }//GEN-LAST:event_spnEditorScrollFocusLost
 
     private void spnWatchesScrollFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_spnWatchesScrollFocusLost
-        saveUserPreferences(false);
+        saveUserConfig();
     }//GEN-LAST:event_spnWatchesScrollFocusLost
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -1230,14 +1236,19 @@ public final class DatLTPluginControlBoardTopComponent extends TopComponent {
     // End of variables declaration//GEN-END:variables
     @Override
     public void componentOpened() {
+        super.componentOpened();
         // Tự động điền lại toàn bộ dữ liệu cũ
-        loadUserPreferences();
+        loadUserConfig();
+        isLoaded = true;
     }
 
     @Override
     public void componentClosed() {
         // Tự động lưu lại trước khi tắt
-        saveUserPreferences(true);
+        if (isLoaded) saveUserConfig();
+        // Reset lại cờ khi đóng hẳn component
+        isLoaded = false; 
+        super.componentClosed();
     }
 
     @Override
@@ -1480,74 +1491,67 @@ public final class DatLTPluginControlBoardTopComponent extends TopComponent {
     /**
      * Hàm lưu toàn bộ giá trị đang có trên UI vào máy
      */
-    private void saveUserPreferences(boolean pIsComponentClosed) {
+    private void saveUserPreferences() {
         // Lấy đối tượng Preferences gắn liền với class TopComponent của bạn
         Preferences prefs = NbPreferences.forModule(DatLTPluginControlBoardTopComponent.class);
-        int wTabIdx = jTabbedPane1.getSelectedIndex();
 
-        // Lưu luôn tab nào đang được mở cuối cùng trên JTabbedPane
+        // 1. Luôn lưu lại tab nào đang được mở cuối cùng 
+        // Nếu đóng hẳn component (pIsComponentClosed = true) thì giữ nguyên index hiện tại hoặc lưu tùy ý bạn
+        int wTabIdx = jTabbedPane1.getSelectedIndex();
         prefs.putInt("selected_tab_index", wTabIdx);
 
-        int wTabIdxCompare = pIsComponentClosed ? -1 : wTabIdx;
-        switch (wTabIdxCompare) {
-            // Sync Tab
-            case 0:
-                // Lưu trạng thái các Checkbox (Cmn, SQL, Gym, Check, BatBase, JmsSysBase...)
-                prefs.putBoolean("chb_moelacmn", chbMoelaCmn.isSelected());
-                prefs.putBoolean("chb_moelasql", chbMoelaSQL.isSelected());
-                prefs.putBoolean("chb_moelagym", chbMoelaGym.isSelected());
-                prefs.putBoolean("chb_moelacheck", chbMoelaCheck.isSelected());
-                prefs.putBoolean("chb_batbase", chbBatBase.isSelected());
-                prefs.putBoolean("chb_jmsysbase", chbJmSysBase.isSelected());
+        // 2. LƯU TOÀN BỘ CẤU HÌNH - KHÔNG PHÂN BIỆT TAB
+        // Cứ gọi hàm là lưu sạch sẽ, không lo switch-case sót dữ liệu nữa
+        // --- Sync Tab (Tab 0) ---
+        if (chbMoelaCmn != null) {
+            prefs.putBoolean("chb_moelacmn", chbMoelaCmn.isSelected());
+        }
+        if (chbMoelaSQL != null) {
+            prefs.putBoolean("chb_moelasql", chbMoelaSQL.isSelected());
+        }
+        if (chbMoelaGym != null) {
+            prefs.putBoolean("chb_moelagym", chbMoelaGym.isSelected());
+        }
+        if (chbMoelaCheck != null) {
+            prefs.putBoolean("chb_moelacheck", chbMoelaCheck.isSelected());
+        }
+        if (chbBatBase != null) {
+            prefs.putBoolean("chb_batbase", chbBatBase.isSelected());
+        }
+        if (chbJmSysBase != null) {
+            prefs.putBoolean("chb_jmsysbase", chbJmSysBase.isSelected());
+        }
+        if (txtFilePath != null) {
+            prefs.put("txt_filepath", txtFilePath.getText());
+        }
 
-                // Lưu đường dẫn Path trong ô JTextField (txtPath)
-                prefs.put("txt_filepath", txtFilePath.getText());
-                break;
-                
-            // Align Cmt Tab
-            case 1:
-                prefs.putBoolean("chb_autoalign", chbAutoAlign.isSelected());
-                prefs.put("txt_tabquantity", txtTabQuantity.getText());
-                break;
-                
-            // SQL↔Code Tab
-            case 2:
-                prefs.put("txt_namevarsb", txtNameVarSB.getText());
-                break;
-                
-            // Scroll Tab
-            case 3:
-                prefs.putInt("spn_editorscroll", (int) spnEditorScroll.getValue());
-                prefs.putInt("spn_editorscroll", (int) spnEditorScroll.getValue());
-                break;
+        // --- Align Cmt Tab (Tab 1) ---
+        if (chbAutoAlign != null) {
+            prefs.putBoolean("chb_autoalign", chbAutoAlign.isSelected());
+        }
+        if (txtTabQuantity != null) {
+            prefs.put("txt_tabquantity", txtTabQuantity.getText());
+        }
 
-            default:
-                // Sync Tab
-                prefs.putBoolean("chb_moelacmn", chbMoelaCmn.isSelected());
-                prefs.putBoolean("chb_moelasql", chbMoelaSQL.isSelected());
-                prefs.putBoolean("chb_moelagym", chbMoelaGym.isSelected());
-                prefs.putBoolean("chb_moelacheck", chbMoelaCheck.isSelected());
-                prefs.putBoolean("chb_batbase", chbBatBase.isSelected());
-                prefs.putBoolean("chb_jmsysbase", chbJmSysBase.isSelected());
-                prefs.put("txt_filepath", txtFilePath.getText());
+        // --- SQL↔Code Tab (Tab 2) ---
+        if (txtNameVarSB != null) {
+            prefs.put("txt_namevarsb", txtNameVarSB.getText());
+        }
 
-                // Align Cmt Tab
-                prefs.putBoolean("chb_autoalign", chbAutoAlign.isSelected());
-                prefs.put("txt_tabquantity", txtTabQuantity.getText());
+        // --- Scroll Tab (Tab 3) ---
+        if (spnEditorScroll != null) {
+            prefs.putInt("spn_editorscroll", (int) spnEditorScroll.getValue());
+        }
 
-                // SQL↔Code Tab
-                prefs.put("txt_namevarsb", txtNameVarSB.getText());
-
-                // Scroll Tab
-                prefs.putInt("spn_editorscroll", (int) spnEditorScroll.getValue());
-                prefs.putInt("spn_editorscroll", (int) spnEditorScroll.getValue());
+        if (spnWatchesScroll != null) {
+            prefs.putInt("spn_watchesscroll", (int) spnWatchesScroll.getValue());
         }
 
         // Ghi ép dữ liệu xuống ổ đĩa ngay lập tức
         try {
             prefs.flush();
         } catch (Exception e) {
-            // Log lỗi nếu có
+            System.err.println("Lỗi lưu Preferences: " + e.getMessage());
         }
     }
 
@@ -1597,6 +1601,85 @@ public final class DatLTPluginControlBoardTopComponent extends TopComponent {
         lblNews.setVisible(prefs.getBoolean("chb_displaynewsbar", false));
     }
 
+    private void saveUserConfig() {
+        if (!isLoaded) {
+            return;
+        }
+
+        int wTabIdx = jTabbedPane1.getSelectedIndex();
+        wPluginConfig.setSelected_tab_index(wTabIdx);
+
+        /**
+         *Sync Tab*
+         */
+        wPluginConfig.setChb_moelacmn(chbMoelaCmn.isSelected());
+        wPluginConfig.setChb_moelasql(chbMoelaSQL.isSelected());
+        wPluginConfig.setChb_moelagym(chbMoelaGym.isSelected());
+        wPluginConfig.setChb_moelacheck(chbMoelaCheck.isSelected());
+        wPluginConfig.setChb_batbase(chbBatBase.isSelected());
+        wPluginConfig.setChb_jmsysbase(chbJmSysBase.isSelected());
+        wPluginConfig.setTxt_filepath(txtFilePath.getText());
+
+        /**
+         *Align Cmt Tab*
+         */
+        wPluginConfig.setChb_autoalign(chbAutoAlign.isSelected());
+        wPluginConfig.setTxt_tabquantity(txtTabQuantity.getText());
+
+        /**
+         *SQL↔Code Tab*
+         */
+        wPluginConfig.setTxt_namevarsb(txtNameVarSB.getText());
+
+        /**
+         *Align Cmt Tab*
+         */
+        wPluginConfig.setSpn_editorscroll((int) spnEditorScroll.getValue());
+        wPluginConfig.setSpn_watchesscroll((int) spnWatchesScroll.getValue());
+
+        PluginConfigFileService.SaveConfig(wPluginConfig);
+    }
+
+    public void loadUserConfig() {
+        wPluginConfig = PluginConfigFileService.getObjectConfig();
+
+        // Khôi phục lại Tab đang đứng trước đó
+        int savedTabIndex = wPluginConfig.getSelected_tab_index();
+        if (savedTabIndex < jTabbedPane1.getTabCount()) {
+            jTabbedPane1.setSelectedIndex(savedTabIndex);
+        }
+
+        /**
+         *Sync Tab*
+         */
+        chbMoelaCmn.setSelected(wPluginConfig.isChb_moelacmn());
+        chbMoelaSQL.setSelected(wPluginConfig.isChb_moelasql());
+        chbMoelaGym.setSelected(wPluginConfig.isChb_moelagym());
+        chbMoelaCheck.setSelected(wPluginConfig.isChb_moelacheck());
+        chbBatBase.setSelected(wPluginConfig.isChb_batbase());
+        chbJmSysBase.setSelected(wPluginConfig.isChb_jmsysbase());
+        txtFilePath.setText(wPluginConfig.getTxt_filepath());
+
+        /**
+         *Align Cmt Tab*
+         */
+        chbAutoAlign.setSelected(wPluginConfig.isChb_autoalign());
+        txtTabQuantity.setText(wPluginConfig.getTxt_tabquantity());
+
+        /**
+         *SQL↔Code Tab*
+         */
+        txtNameVarSB.setText(wPluginConfig.getTxt_namevarsb());
+
+        /**
+         *Align Cmt Tab*
+         */
+        spnEditorScroll.setValue(wPluginConfig.getSpn_editorscroll());
+        spnWatchesScroll.setValue(wPluginConfig.getSpn_watchesscroll());
+
+        Preferences prefs = NbPreferences.forModule(DatLTPluginControlBoardTopComponent.class);
+        lblNews.setVisible(prefs.getBoolean("chb_displaynewsbar", false));
+    }
     /**
      * Đọc lại cấu hình từ Tools -> Options và cập nhật trạng thái ẩn/hiện của thanh News
      */

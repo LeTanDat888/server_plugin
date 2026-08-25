@@ -4,5 +4,5 @@ OpenIDE-Module-Public-Packages: com.datlt.*
 OpenIDE-Module-Name: DatLT Plugin
 OpenIDE-Module-Requires: org.openide.windows.WindowManager
 OpenIDE-Module-Specification-Version: 1.5
-OpenIDE-Module-Implementation-Version: 1.5.0
+OpenIDE-Module-Implementation-Version: 1.5.1
 OpenIDE-Module-Localizing-Bundle: com/datlt/datlt_plugin/Bundle.properties
